@@ -3,11 +3,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState, useRef, useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
+  const pathname = usePathname();
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -43,13 +45,28 @@ export default function Navbar() {
         </div>
 
         <div className="hidden md:flex gap-4 lg:gap-5 px-5">
-          <Link href="/" className="text-gray-600">
+          <Link
+            href="/"
+            className={`text-gray-600 hover:text-blue-600 transition-colors ${
+              pathname === "/" ? "text-blue-600 font-medium" : ""
+            }`}
+          >
             Home
           </Link>
-          <Link href="/about" className="text-gray-600">
+          <Link
+            href="/about"
+            className={`text-gray-600 hover:text-indigo-600 transition-colors ${
+              pathname === "/about" ? "text-blue-600 font-medium" : ""
+            }`}
+          >
             About
           </Link>
-          <Link href="/post" className="text-gray-600">
+          <Link
+            href="/post"
+            className={`text-gray-600 hover:text-indigo-600 transition-colors ${
+              pathname === "/post" ? "text-blue-700 font-medium" : ""
+            }`}
+          >
             Posts
           </Link>
         </div>
@@ -81,58 +98,55 @@ export default function Navbar() {
         </button>
       </div>
 
-<div className={`fixed flex flex-col justify-between top-0 bottom-0 right-0 w-100 bg-white text-black transition-transform duration-500 px-10
+      <div
+        className={`fixed flex flex-col justify-between top-0 bottom-0 right-0 w-100 bg-white text-black transition-transform duration-500 px-10
           gap-6 py-16 h-screen z-50 ${
             menuOpen ? "translate-x-0" : "translate-x-full"
-          }`}>
-      <ul
-        ref={menuRef}
-        className="flex flex-col gap-4"
+          }`}
       >
-        <div
-          className="absolute top-6 right-10"
-          onClick={() => setMenuOpen(false)}
-        >
-          <Image
-            src="/icons/close.svg"
-            width={20}
-            height={20}
-            className="cursor-pointer"
-            alt="Close Menu"
-          />
-        </div>
+        <ul ref={menuRef} className="flex flex-col gap-4">
+          <div
+            className="absolute top-6 right-10"
+            onClick={() => setMenuOpen(false)}
+          >
+            <Image
+              src="/icons/close.svg"
+              width={20}
+              height={20}
+              className="cursor-pointer"
+              alt="Close Menu"
+            />
+          </div>
 
-        <li>
-          <Link
-            href="/"
-            onClick={() => setMenuOpen(false)}
-            className=" font-medium"
-          >
-            Home
-          </Link>
-        </li>
-        <li>
-          <Link
-            href="/about"
-            onClick={() => setMenuOpen(false)}
-            className=" font-medium"
-          >
-            About Us
-          </Link>
-        </li>
+          <li>
+            <Link
+              href="/"
+              onClick={() => setMenuOpen(false)}
+              className=" font-medium"
+            >
+              Home
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/about"
+              onClick={() => setMenuOpen(false)}
+              className=" font-medium"
+            >
+              About Us
+            </Link>
+          </li>
 
-        <li>
-          <Link
-            href="/post"
-            onClick={() => setMenuOpen(false)}
-            className=" font-medium"
-          >
-            Post
-          </Link>
-        </li>
+          <li>
+            <Link
+              href="/post"
+              onClick={() => setMenuOpen(false)}
+              className=" font-medium"
+            >
+              Post
+            </Link>
+          </li>
         </ul>
-        
-
 
         <div className="flex flex-col justify-center gap-4 ">
           <Link
@@ -142,7 +156,7 @@ export default function Navbar() {
           >
             Sign Up
           </Link>
-         
+
           <Link
             href="/auth/login"
             onClick={() => setMenuOpen(false)}
@@ -150,10 +164,8 @@ export default function Navbar() {
           >
             Login
           </Link>
-         
         </div>
-        </div>
-      
+      </div>
     </nav>
   );
 }
