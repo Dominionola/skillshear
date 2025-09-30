@@ -34,6 +34,21 @@ export default function Navbar() {
     };
   }, [menuOpen]);
 
+  useEffect(() => {
+    function handleResize() {
+      if (window.innerWidth >= 768 && menuOpen) {
+        // 768px is the 'md' breakpoint in Tailwind
+        setMenuOpen(false);
+      }
+    }
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [menuOpen]);
+
   return (
     <nav className="font-sans fixed w-full shadow-md bg-white flex items-center justify-between h-16 ">
       <div className="w-full flex justify-between items-center max-w-7xl mx-auto">
@@ -47,24 +62,30 @@ export default function Navbar() {
         <div className="hidden md:flex gap-4 lg:gap-5 px-5">
           <Link
             href="/"
-            className={`text-gray-600 hover:text-blue-600 transition-colors ${
-              pathname === "/" ? "text-blue-600 font-medium" : ""
+            className={`text-gray-600 hover:text-blue-600 hover:underline hover:font-medium transition-colors ${
+              pathname === "/"
+                ? "text-black font-medium underline decoration-2 decoration-blue-600"
+                : ""
             }`}
           >
             Home
           </Link>
           <Link
             href="/about"
-            className={`text-gray-600 hover:text-indigo-600 transition-colors ${
-              pathname === "/about" ? "text-blue-600 font-medium" : ""
+            className={`text-gray-600 hover:text-blue-600 hover:underline hover:font-medium transition-colors ${
+              pathname === "/about"
+                ? "text-black font-medium underline decoration-2 decoration-blue-600"
+                : ""
             }`}
           >
             About
           </Link>
           <Link
             href="/post"
-            className={`text-gray-600 hover:text-indigo-600 transition-colors ${
-              pathname === "/post" ? "text-blue-700 font-medium" : ""
+            className={`text-gray-600 hover:text-blue-600 hover:underline hover:font-medium transition-colors ${
+              pathname === "/post"
+                ? "text-black font-medium underline decoration-2 decoration-blue-600"
+                : ""
             }`}
           >
             Posts
