@@ -50,7 +50,7 @@ export default function Navbar() {
   }, [menuOpen]);
 
   return (
-    <nav className="font-sans fixed w-full shadow-md bg-white flex items-center justify-between h-16 ">
+    <nav className="font-poppins fixed w-full shadow-md bg-white flex items-center justify-between h-16 ">
       <div className="w-full flex justify-between items-center max-w-7xl mx-auto">
         <div className=" flex px-5">
           <Link className="flex items-center " href="/">

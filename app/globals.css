@@ -1,4 +1,11 @@
-@import "tailwindcss";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --background: #ffffff;
@@ -17,7 +24,8 @@
 }
 
 body {
-  font-family: var(--font-geist-sans), var(--font-poppins), system-ui, -apple-system, sans-serif;
+  font-family: var(--font-geist-sans), var(--font-poppins), system-ui,
+    -apple-system, sans-serif;
 }
 
 .font-swash {

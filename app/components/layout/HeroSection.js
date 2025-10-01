@@ -1,7 +1,7 @@
 export default function HeroSection() {
   return (
     <section className="hero-section max-w-7xl mx-auto text-center">
-      <div className="font-sans">
+      <div className="">
         <h1 className="text-4xl font-bold font-sans">
           Empowering Your{" "}
           <span className="text-blue-500 font-serif italic font-medium font-swash text-5xl tracking-tighter">
