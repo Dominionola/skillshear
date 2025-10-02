@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function HeroSection() {
   return (
-    <section className="hero-section bg-gray-200 mx-auto text-center p-8 ">
+    <section className="hero-section flex flex-col md:flex-row bg-gray-200 mx-auto text-center p-8 ">
       <div className="max-w-7xl">
         <h1 className="text-4xl font-bold font-sans">
           Empowering Your{" "}
@@ -42,6 +42,15 @@ export default function HeroSection() {
             <span>View All Skills</span>
           </Link>
         </div>
+      </div>
+      <div>
+        <Image
+          src="/assets/hero-img.png"
+          alt="Hero Image"
+          width={800}
+          height={400}
+          className="mt-8 mx-auto"
+        />
       </div>
     </section>
   );
