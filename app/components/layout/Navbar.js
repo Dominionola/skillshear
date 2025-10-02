@@ -50,7 +50,7 @@ export default function Navbar() {
   }, [menuOpen]);
 
   return (
-    <nav className="font-poppins fixed w-full shadow-md bg-white flex items-center justify-between h-16 ">
+    <nav className="font-poppins fixed w-full shadow-md bg-white flex items-center justify-between h-16 z-50 ">
       <div className="w-full flex justify-between items-center max-w-7xl mx-auto">
         <div className=" flex px-5">
           <Link className="flex items-center " href="/">
@@ -120,7 +120,7 @@ export default function Navbar() {
       </div>
 
       <div
-        className={`fixed flex flex-col justify-between top-0 bottom-0 right-0 w-100 bg-white text-black transition-transform duration-500 px-10
+        className={`fixed flex flex-col justify-between top-0 bottom-0 right-0 w-[70vw] bg-white text-black transition-transform duration-500 px-10
           gap-6 py-16 h-screen z-50 ${
             menuOpen ? "translate-x-0" : "translate-x-full"
           }`}
