@@ -1,3 +1,24 @@
+@keyframes heart-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(40%) scaleX(0.1) scaleY(0.1);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-10%) scaleX(1.1) scaleY(1.1);
+  }
+  80% {
+    transform: translateY(-20%) scaleX(0.95) scaleY(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scaleX(1) scaleY(1);
+  }
+}
+
+.animate-heart-rise {
+  animation: heart-rise 0.7s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+}
 
 @tailwind base;
 @tailwind components;
