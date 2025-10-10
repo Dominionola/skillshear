@@ -87,7 +87,7 @@ export default function HeroSection() {
               </li>
 
               <div className="relative flex flex-col items-center pl-5">
-                <span className="absolute -top-4 left-1/2 -translate-x-1/2 flex gap-1 opacity-0 group-hover:opacity-100 group-hover:animate-heart-rise">
+                <span className="absolute -top-4 left-1/2 -translate-x-1/2 flex gap-1 opacity-0 group-hover:opacity-100 group-hover:custom-heart-rise">
                   <Image
                     src="/icons/heart.svg"
                     alt="Heart icon"

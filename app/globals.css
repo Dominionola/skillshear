@@ -1,3 +1,16 @@
+.custom-heart-rise {
+  animation: heart-rise 0.7s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+}
+
+@layer utilities {
+  .custom-heart-rise {
+    animation: heart-rise 0.7s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+  }
+}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @keyframes heart-rise {
   0% {
     opacity: 0;
@@ -19,14 +32,6 @@
 .animate-heart-rise {
   animation: heart-rise 0.7s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
 }
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
 :root {
   --background: #ffffff;
