@@ -8,6 +8,7 @@ export default function Home() {
         <div className="w-screen relative left-1/2 right-1/2 -mx-[50vw]">
           <HeroSection />
         </div>
+        <HeroSection />
       </main>
       <Footer />
     </div>

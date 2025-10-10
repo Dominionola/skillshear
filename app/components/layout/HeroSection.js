@@ -6,13 +6,13 @@ export default function HeroSection() {
     <section className="hero-section  bg-no-repeat bg-center bg-white-100 h-80vh">
       <div className="flex flex-col md:flex-row  mx-auto text-center max-w-7xl p-8 md:px-16 gap-8 md:gap-16 items-center justify-center">
         <div className=" justify-center items-center flex flex-col md:items-start md:text-left max-w-2xl">
-          < h1 className="text-4xl font-bold font-sans text-center">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-medium font-sans text-center">
             Empowering Your{" "}
-            <span className="text-blue-500 font-serif italic font-medium font-swash text-5xl tracking-tighter">
+            <span className="text-blue-500 font-serif italic font-medium font-swash text-5xl md:text-6xl lg:text-7xl tracking-tighter">
               Growth
             </span>{" "}
             with Shared{" "}
-            <span className="text-blue-500 font-serif italic font-medium font-swash text-5xl tracking-tighter">
+            <span className="text-blue-500 font-serif italic font-medium font-swash text-5xl md:text-6xl lg:text-7xl tracking-tighter">
               Expertiese
             </span>
           </h1>
@@ -21,7 +21,7 @@ export default function HeroSection() {
             discover new skills, and grow together in our vibrant learning
             community.
           </p>
-          <div className="flex flex-col w-full md:flex-row md:gap-4 md:text-center items-center justify-center ">
+          <div className="flex gap-5  w-full md:flex-row md:gap-4 md:text-center items-center justify-center ">
             <Link
               href="/auth/signup"
               className="mt-6 inline-flex items-center justify-center md:max-w-90 bg-blue-600 text-white px-6 py-3 rounded-3xl text-lg font-medium hover:bg-blue-700 transition-colors whitespace-nowrap"
@@ -38,11 +38,52 @@ export default function HeroSection() {
 
             <Link
               href="/auth/signup"
-              className="mt-6 inline-flex items-center w-full justify-center md:max-w-60 bg-white border border-gray-400 text-black px-6 py-3 rounded-3xl text-lg font-medium transition-colors"
+              className="mt-6 inline-flex items-center  justify-center md:max-w-60 bg-white border border-gray-400 text-black px-6 py-3 rounded-3xl text-lg font-medium transition-colors"
             >
               <span>View All Skills</span>
             </Link>
           </div>
+
+          <ul className="flex flex-wrap">
+           
+
+            <li className="mt-8 inline-block mr-2 rounded-full overflow-hidden w-7 h-7 align-middle">
+              <Image
+                src="/assets/4thWO.jpg"
+                alt="users"
+                width={28}
+                height={28}
+                className="w-full h-full object-cover"
+              />
+            </li>
+            <li className="mt-8 inline-block mr-2 rounded-full overflow-hidden w-7 h-7 align-middle">
+              <Image
+                src="/assets/3rdWO.jpg"
+                alt="users"
+                width={28}
+                height={28}
+                className="w-full h-full object-cover"
+              />
+            </li>
+            <li className="mt-8 inline-block mr-2 rounded-full overflow-hidden w-7 h-7 align-middle">
+              <Image
+                src="/assets/2ndWO.jpg"
+                alt="users"
+                width={28}
+                height={28}
+                className="w-full h-full object-cover"
+              />
+            </li>
+            <li className="mt-8 inline-block mr-2 rounded-full overflow-hidden w-7 h-7 align-middle">
+              <Image
+                src="/assets/1stWO.jpg"
+                alt="users"
+                width={28}
+                height={28}
+                className="w-full h-full object-cover"
+              />
+            </li>
+          </ul>
         </div>
       </div>
       <div className="mt-8 mx-auto rounded-3xl overflow-hidden w-[900px] max-w-full">
