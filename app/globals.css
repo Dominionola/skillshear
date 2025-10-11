@@ -1,10 +1,6 @@
-.custom-heart-rise {
-  animation: heart-rise 0.7s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
-}
-
 @layer utilities {
   .custom-heart-rise {
-    animation: heart-rise 0.7s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+    animation: heart-rise 0.5s cubic-bezier(0.33, 1, 0.68, 1) forwards;
   }
 }
 @tailwind base;
@@ -18,10 +14,10 @@
   }
   60% {
     opacity: 1;
-    transform: translateY(-10%) scaleX(1.1) scaleY(1.1);
+    transform: translateY(-10%) scaleX(1.35) scaleY(1.1);
   }
-  80% {
-    transform: translateY(-20%) scaleX(0.95) scaleY(1.05);
+  85% {
+    transform: translateY(-8%) scaleX(1.08) scaleY(1.02);
   }
   100% {
     opacity: 1;
