@@ -7,7 +7,7 @@ export default function HeroSection() {
 
   return (
     <section className="hero-section  bg-no-repeat bg-center bg-white-100 h-80vh">
-      <div className="flex flex-col md:flex-row  mx-auto text-center max-w-7xl p-8 md:px-16 gap-8 md:gap-16 items-center justify-center">
+      <div className="flex flex-col md:flex-row  mx-auto text-center  max-w-7xl p-8 pt-20 md:pt-25 gap-8 md:gap-16 items-center justify-center">
         <div className=" justify-center items-center flex flex-col md:items-start md:text-left max-w-2xl">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-medium font-sans text-center">
             Empowering Your{" "}
