@@ -51,9 +51,7 @@ export default function FeatureSection() {
           {features.map((f) => (
             <div
               key={f.title}
-              className="bg-white border border-gray-200 
-              hover:bg-gradient-to-br from-[#edeff7] to-[hsla(0,0%,100%,1)]
-              rounded-2xl p-6 shadow-sm hover:shadow-md hover:bg-gradient transition-shadow"
+              className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm transition-shadow hover:shadow-md hover:bg-[radial-gradient(circle,hsla(224,89%,83%,1)_0%,hsla(0,0%,100%,1)_100%)]"
             >
               <div className="w-10 h-10 flex items-center justify-center rounded-md text-blue-600 mb-4">
                 <Image src={f.icon} alt="" width={30} height={40} />
