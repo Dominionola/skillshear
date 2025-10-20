@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import MotionHeroImage from "./MotionHeroImage";
 // import React, {useState} from "react";
 
 export default function HeroSection() {
@@ -114,15 +115,11 @@ export default function HeroSection() {
       <div className="mt-8 mx-auto rounded-3xl overflow-hidden w-[1000px] max-w-full">
         {/* inner padded wrapper keeps padding inside the rounded container and also clips content */}
         <div className="p-4 md:p-6 bg-transparent overflow-hidden rounded-3xl">
-          <Image
-            src="/assets/hero.png"
-            alt="Hero Image"
-            width={900}
-            height={400}
-            className="w-full h-auto block rounded-3xl"
-          />
+          <MotionHeroImage />
         </div>
       </div>
     </section>
   );
 }
+
+// MotionHeroImage moved to a client component file to avoid server-side hook usage

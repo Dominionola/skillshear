@@ -35,7 +35,7 @@ export default function FeatureSection() {
   ];
 
   return (
-    <section className="pt-12">
+    <section className="pt-12 pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="pb-10 text-center ">
           <h2 className="text-center text-3xl md:text-4xl text-medium">
