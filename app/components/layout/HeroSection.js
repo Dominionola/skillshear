@@ -8,15 +8,15 @@ export default function HeroSection() {
 
   return (
     <section className="hero-section  bg-no-repeat bg-center bg-white-100 h-80vh">
-      <div className="flex flex-col md:flex-row  mx-auto text-center  max-w-7xl p-8 pt-20 md:pt-25 gap-8 md:gap-16 items-center justify-center">
+      <div className="flex flex-col md:flex-row  mx-auto text-center  max-w-7xl p-8 pt-20 md:pt-25 lg:pt-32 gap-8 md:gap-16 items-center justify-center">
         <div className=" justify-center items-center flex flex-col md:items-start md:text-left max-w-2xl">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-medium font-sans text-center">
+          <h1 className="text-4xl md:text-5xl lg:text-7xl font-medium font-sans text-center">
             Empowering Your{" "}
-            <span className="text-blue-500 font-serif italic font-medium font-swash text-5xl md:text-6xl lg:text-7xl tracking-tighter">
+            <span className="text-blue-500 font-serif italic font-medium font-swash text-5xl md:text-6xl lg:text-8xl tracking-tighter">
               Growth
             </span>{" "}
             with Shared{" "}
-            <span className="text-blue-500 font-serif italic font-medium font-swash text-5xl md:text-6xl lg:text-7xl tracking-tighter">
+            <span className="text-blue-500 font-serif italic font-medium font-swash text-5xl md:text-6xl lg:text-8xl tracking-tighter">
               Expertise
             </span>
           </h1>
@@ -112,7 +112,7 @@ export default function HeroSection() {
           </div>
         </div>
       </div>
-      <div className="mt-8 mx-auto rounded-3xl overflow-hidden w-[1000px] max-w-full">
+  <div className="mt-8 mx-auto rounded-3xl overflow-hidden w-full md:max-w-[1000px] xl:max-w-[1400px]">
         {/* inner padded wrapper keeps padding inside the rounded container and also clips content */}
         <div className="p-4 md:p-6 bg-transparent overflow-hidden rounded-3xl">
           <MotionHeroImage />

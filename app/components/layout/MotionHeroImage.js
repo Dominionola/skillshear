@@ -21,8 +21,9 @@ export default function MotionHeroImage() {
       <Image
         src="/assets/hero.png"
         alt="Hero Image"
-        width={900}
-        height={400}
+        width={1400}
+        height={700}
+        sizes="(max-width: 767px) 100vw, (max-width: 1023px) 100vw, (max-width: 1279px) 1000px, 1400px"
         className="w-full h-auto block rounded-3xl"
       />
     </motion.div>
