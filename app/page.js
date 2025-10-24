@@ -3,6 +3,7 @@ import Footer from "./components/layout/Footer";
 import FeatureSection from "./components/layout/FeatureSection";
 import DiscoverCommunity from "./components/layout/DiscoverCommunity";
 
+
 export default function Home() {
   return (
     <div className="font-sans min-h-screen p-8 md:p-0 pt-16 gap-16  ">
