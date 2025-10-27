@@ -2,6 +2,8 @@ import HeroSection from "./components/layout/HeroSection";
 import Footer from "./components/layout/Footer";
 import FeatureSection from "./components/layout/FeatureSection";
 import DiscoverCommunity from "./components/layout/DiscoverCommunity";
+import CallToAction from "./components/layout/CallToAction";
+
 
 
 export default function Home() {
@@ -12,7 +14,8 @@ export default function Home() {
           <HeroSection />
         </div>
         <FeatureSection />
-        <DiscoverCommunity/>
+        <DiscoverCommunity />
+        <CallToAction />
         
       </main>
       <Footer />
