@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function CommunityGrid({ communities }) {
   const sample = communities || [
@@ -93,6 +94,9 @@ export default function CommunityGrid({ communities }) {
             </article>
           ))}
         </div>
+<Link href="/communities" className="mt-8 inline-block w-full text-center text-blue-600 font-medium">
+          View All Communities
+        </Link>
       </div>
     </section>
   );

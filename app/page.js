@@ -13,6 +13,7 @@ export default function Home() {
         </div>
         <FeatureSection />
         <DiscoverCommunity/>
+        
       </main>
       <Footer />
     </div>
