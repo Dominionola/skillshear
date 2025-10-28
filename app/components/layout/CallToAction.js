@@ -3,17 +3,17 @@ import Image from "next/image";
 
 export default function CallToAction() {
   return (
-    <div className="relative rounded-2xl overflow-hidden w-full">
-
+    <div className="relative rounded-2xl overflow-hidden w-full min-h-[220px] md:min-h-[320px]">
       {/* centered background image constrained to max-w-7xl so it doesn't change CTA size */}
-      <div className="absolute inset-0 flex justify-center pointer-events-none">
-        <div className="w-full max-w-7xl h-full">
+      <div className="absolute inset-0 flex justify-center items-center pointer-events-none">
+        <div className="w-full max-w-7xl h-full flex justify-center items-center mx-auto">
           <Image
-            src="https://cdn.builder.io/api/v1/image/assets/d5e2d72a033944e1a916c5c34902a1ff/d06cb337b4bd44549a3ed6c676f2c8c0?width=1811"
-            alt="background"
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 1200px"
-            className="object-cover w-full h-full"
+            src="/assets/circle.svg"
+            alt=""
+            unoptimized
+            width={900}
+            height={300}
+            className="object-center object-cover "
           />
         </div>
       </div>
@@ -21,9 +21,11 @@ export default function CallToAction() {
       {/* overlay for readability */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/25 to-black/30 pointer-events-none" />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 py-8 md:py-12 flex flex-col md:flex-row items-center justify-between gap-6 text-white">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 py-10 md:py-16 flex flex-col md:flex-row items-center justify-between gap-6 text-white">
         <div className="flex-1 min-w-0">
-          <h2 className="text-xl md:text-2xl font-semibold">Join Our Community</h2>
+          <h2 className="text-xl md:text-2xl font-semibold">
+            Join Our Community
+          </h2>
           <p className="text-sm md:text-base text-white/90 mt-2">
             Connect with like-minded individuals and enhance your skills.
           </p>
