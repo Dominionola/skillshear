@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function CallToAction() {
   return (
-    <div className="relative rounded-2xl overflow-hidden w-full min-h-[400px] md:min-h-[320px]">
+    <div className="relative rounded-2xl overflow-hidden w-full min-h-[400px] md:min-h-[520px]">
       {/* centered background image constrained to max-w-7xl so it doesn't change CTA size */}
       <div className="absolute inset-0 flex justify-center items-center pointer-events-none z-10">
         <div className="w-full max-w-7xl h-full flex justify-center items-center mx-auto">
