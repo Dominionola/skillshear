@@ -55,3 +55,24 @@ body {
   -webkit-font-feature-settings: "swsh" 1;
   -moz-font-feature-settings: "swsh" 1;
 }
+
+/* Decorative slow spin used by the CTA background circle */
+@keyframes slow-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.cta-spin {
+  will-change: transform;
+  animation: slow-spin 70s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta-spin {
+    animation: none !important;
+  }
+}
