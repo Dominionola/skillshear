@@ -19,23 +19,25 @@ export default function CallToAction() {
         }}
       />
 
-      <div className="relative z-20 max-w-7xl mx-auto px-6 py-10 md:py-16 flex flex-col  items-center justify-between gap-6 text-white">
-        <div className="flex flex-col min-w-0 text-center\\">
-          <h2 className="text-xl md:text-2xl font-semibold">
-            Join Our Community
-          </h2>
-          <p className="text-sm md:text-base text-white/90 mt-2">
-            Connect with like-minded individuals and enhance your skills.
-          </p>
-        </div>
+      <div className="absolute inset-0 z-20 flex items-center justify-center">
+        <div className="max-w-7xl mx-auto px-6 py-10 md:py-16 flex flex-col items-center text-center gap-6 text-white">
+          <div className="flex flex-col min-w-0 text-center justify-center items-center">
+            <h2 className="text-2xl md:text-4xl font-semibold">
+              Join Our Community
+            </h2>
+            <p className="text-base md:text-lg text-white/90 mt-2">
+              Connect with like-minded individuals and enhance your skills.
+            </p>
+          </div>
 
-        <div className="flex-shrink-0">
-          <Link
-            href="/join"
-            className="inline-block bg-white text-blue-600 font-medium py-2 px-4 rounded-full shadow-md hover:bg-gray-100 transition-colors"
-          >
-            Get Started
-          </Link>
+          <div className="flex-shrink-0">
+            <Link
+              href="/auth/signup"
+              className="inline-block bg-white text-blue-600 font-medium py-2 px-4 rounded-full shadow-md hover:bg-gray-100 transition-colors"
+            >
+              Get Started
+            </Link>
+          </div>
         </div>
       </div>
     </div>
