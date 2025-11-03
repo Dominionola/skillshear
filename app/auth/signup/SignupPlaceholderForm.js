@@ -75,7 +75,7 @@ export default function SignupPlaceholderForm() {
 
         <div className="pt-2">
           <button
-            type="button"
+            type="Submit"
             className="w-full inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-black font-medium py-3 px-4 rounded-full"
           >
             Create account
