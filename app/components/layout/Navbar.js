@@ -35,6 +35,10 @@ export default function Navbar() {
   }, [menuOpen]);
 
   useEffect(() => {
+    // Guard against server-side execution and ensure resize listener
+    // is only attached in the browser.
+    if (typeof window === "undefined") return;
+
     function handleResize() {
       if (window.innerWidth >= 768 && menuOpen) {
         // 768px is the 'md' breakpoint in Tailwind

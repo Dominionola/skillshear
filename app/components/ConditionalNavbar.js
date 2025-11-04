@@ -1,3 +1,5 @@
+"use client";
+
 import Navbar from "./layout/Navbar";
 
 export default function ConditionalNavbar() {

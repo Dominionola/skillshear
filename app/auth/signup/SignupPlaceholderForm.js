@@ -2,9 +2,19 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { UserAuth } from "@/app/context/ContextAuth";
 
 export default function SignupPlaceholderForm() {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState("");
+
+  const {sessions} = UserAuth();
+  console.log("Current session:", sessions);
 
   return (
     <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-lg">
@@ -62,16 +72,7 @@ export default function SignupPlaceholderForm() {
           </div>
         </label>
 
-        <label className="flex flex-col text-sm text-black">
-          Country
-          <select className="mt-2 px-4 py-3 rounded-lg border border-gray-300 bg-transparent text-black">
-            <option>Nigeria</option>
-            <option>United States</option>
-            <option>United Kingdom</option>
-            <option>Canada</option>
-            <option>Australia</option>
-          </select>
-        </label>
+        
 
         <div className="pt-2">
           <button
