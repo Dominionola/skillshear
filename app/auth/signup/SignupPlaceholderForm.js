@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { UserAuth } from "@/app/context/ContextAuth";
+import { ContextAuthProvider, UserAuth } from "@/app/context/ContextAuth";
 
 export default function SignupPlaceholderForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -13,7 +13,7 @@ export default function SignupPlaceholderForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState("");
 
-  const {sessions, signUpNewUser, Signout} = UserAuth();
+const { sessions, signUpNewUser, signInUser, signout } = UserAuth();
   console.log("Current session:", sessions);
 
   return (
