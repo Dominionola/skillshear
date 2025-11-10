@@ -13,7 +13,7 @@ export default function SignupPlaceholderForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState("");
 
-  const {sessions} = UserAuth();
+  const {sessions, signUpNewUser, Signout} = UserAuth();
   console.log("Current session:", sessions);
 
   return (
