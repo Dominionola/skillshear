@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { ContextAuthProvider, UserAuth } from "@/app/context/ContextAuth";
+import { useRouter } from "next/navigation";
 
 export default function SignupPlaceholderForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -13,16 +14,34 @@ export default function SignupPlaceholderForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState("");
 
-const { sessions, signUpNewUser, signInUser, signout } = UserAuth();
-  console.log("Current session:", sessions);
+const { session, signUpNewUser, signInUser, signout } = UserAuth();
+  console.log("Current session:", session);
+  console.log(email, password)
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try{
+      const result = await signUpNewUser(email, password);
+      if (result.success) {
+        router.push("/post");
+      } 
+    } catch (error) {
+      setError(error.message);
+  } finally {
+      setLoading(false);
+    }
+
+  }
 
   return (
     <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-lg">
-      <form className="space-y-4">
+      <form onSubmit={handleSignup} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <label className="flex flex-col text-sm text-black">
             First name
             <input
+            onChange={(e) => setFirstName
+            (e.target.value)}
               className="mt-2 px-4 py-3 rounded-lg border border-gray-300 bg-transparent text-black placeholder:text-black"
               placeholder="First name"
             />
@@ -31,6 +50,7 @@ const { sessions, signUpNewUser, signInUser, signout } = UserAuth();
           <label className="flex flex-col text-sm text-black">
             Last name
             <input
+            onChange={(e) => setLastName(e.target.value)}
               className="mt-2 px-4 py-3 rounded-lg border border-gray-300 bg-transparent text-black placeholder:text-black"
               placeholder="Last name"
             />
@@ -40,6 +60,7 @@ const { sessions, signUpNewUser, signInUser, signout } = UserAuth();
         <label className="flex flex-col text-sm text-black">
           Email
           <input
+          onChange={(e) => setEmail(e.target.value)}
             type="email"
             className="mt-2 w-full px-4 py-3 rounded-lg border border-gray-300 bg-transparent text-black placeholder:text-black"
             placeholder="you@example.com"
@@ -50,6 +71,7 @@ const { sessions, signUpNewUser, signInUser, signout } = UserAuth();
           Password
           <div className="mt-2 relative">
             <input
+            onChange={(e) => setPassword(e.target.value)}
               type={showPassword ? "text" : "password"}
               className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-transparent text-black placeholder:text-black"
               placeholder="Password (8 or more characters)"
@@ -81,6 +103,8 @@ const { sessions, signUpNewUser, signInUser, signout } = UserAuth();
           >
             Create account
           </button>
+
+          {error && <p className="mt-4 text-red-500 text-sm">{error}</p>}
         </div>
       </form>
     </div>
