@@ -2,6 +2,7 @@
 
 import { UserAuth } from "../context/ContextAuth"
 import { useRouter } from "next/navigation";
+import PrivteRouter from "../components/PrivateRoute";
 
 export default function dashboardpage( ){
 
@@ -19,11 +20,13 @@ export default function dashboardpage( ){
 
     console.log("Dashboard session:", session);
     return(
+        <PrivteRouter>
         <div className="pt-16">
            <h1 className="text-4xl">This is the Dashboard</h1>
            <div> welcome {session?.user?.email}
             </div>
             <p className="bg-red-600 px-4 py-3 border cursor-pointer inline-block rounded-xl" onClick={handleSignOut}>Signout</p>
         </div>
+        </PrivteRouter>
     )
 }

@@ -2,7 +2,12 @@
 const nextConfig = {
   images: {
     // allow loading images from builder CDN used in the CallToAction background
-    domains: ["cdn.builder.io"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cdn.builder.io",
+      },
+    ],
   },
 };
 
