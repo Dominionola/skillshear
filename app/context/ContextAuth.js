@@ -6,7 +6,7 @@ import supabase from "../supabaseClient";
 const AuthContext = createContext(null);
 
 export function ContextAuthProvider({ children }) {
-  const [session, setSession] = useState(null);
+  const [session, setSession] = useState(undefined);
 
   // --- SIGN UP ---
   const signUpNewUser = async (email, password) => {
@@ -49,7 +49,7 @@ export function ContextAuthProvider({ children }) {
   }, []);
 
   // --- SIGN OUT ---
-  const signout = async () => {
+  const signOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) console.error("Error signing out:", error);
     else setSession(null);
@@ -62,7 +62,7 @@ export function ContextAuthProvider({ children }) {
         session,
         signUpNewUser,
         signInUser,
-        signout,
+        signOut,
       }}
     >
       {children}

@@ -2,25 +2,34 @@
 
 import { UserAuth } from "../context/ContextAuth";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 
-export default function PrivateRouter({ children }) {
+export default function PrivateRoute({ children }) {
   const { session } = UserAuth();
   const router = useRouter();
 
-  useEffect(() => {
-    // 🚨 session === undefined → still loading Supabase
-    if (session === undefined) return;
+  // wait for context to finish loading session
+  const [isChecking, setIsChecking] = useState(true);
 
-    // ❌ no session → redirect
+  useEffect(() => {
+    // session === null → still loading Supabase session
     if (session === null) {
-      router.push("/auth/signup");
+      setIsChecking(true);
+      return;
+    }
+
+    // session finished loading → stop loading screen
+    setIsChecking(false);
+
+    // no user → redirect
+    if (!session) {
+      router.replace("/auth/signup");
     }
   }, [session, router]);
 
-  // 🔵 Loading screen while supabase is still loading session
-  if (session === undefined) {
+  // Show loading screen until session resolves
+  if (isChecking) {
     return (
       <div className="w-full h-screen flex items-center justify-center bg-white">
         <Image
@@ -34,6 +43,8 @@ export default function PrivateRouter({ children }) {
     );
   }
 
-  // ✔ Logged in → render page
+  // If user is not signed in, don't render dashboard
+  if (!session) return null;
+
   return <>{children}</>;
 }
