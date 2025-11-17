@@ -6,12 +6,12 @@ import PrivteRouter from "../components/PrivateRoute";
 
 export default function dashboardpage( ){
 
-    const { session, signout } = UserAuth();
+    const { session, signOut } = UserAuth();
     const router = useRouter();
     const handleSignOut = async (e) => {
         try {
             e.preventDefault();
-            await signout();
+            await signOut();
             router.push("/");
         } catch (error) {
             console.error("Error signing out:", error);

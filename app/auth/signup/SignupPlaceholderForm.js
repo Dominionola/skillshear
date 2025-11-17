@@ -26,8 +26,8 @@ const { session, signUpNewUser, signInUser, signout, signInWithGoogle } = UserAu
     try{
       const result = await signUpNewUser(email, password);
       if (result.success) {
-        router.push("/dashboard");
-      } 
+        router.push("/auth/confirm-email");
+      }
     } catch (error) {
       setError(error.message);
   } finally {
@@ -109,7 +109,7 @@ const { session, signUpNewUser, signInUser, signout, signInWithGoogle } = UserAu
             type="Submit"
             className="w-full inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-black font-medium py-3 px-4 rounded-full"
           >
-            Create account
+            Sign Up
           </button>
 
           {error && <p className="mt-4 text-red-500 text-sm">{error}</p>}
