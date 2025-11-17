@@ -23,6 +23,10 @@ export function ContextAuthProvider({ children }) {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
+      options: {
+      // After clicking the email confirmation link, user is redirected here
+      emailRedirectTo: `${location.origin}/signin`,
+    },
     });
 
     if (error) {
