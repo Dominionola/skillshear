@@ -58,8 +58,12 @@ export function ContextAuthProvider({ children }) {
 
   // --- SIGN UP WITH GOOGLE ---
   const signInWithGoogle = async () => {
+    const redirectTo = `${window.location.origin}/auth/callback`;
     await supabase.auth.signInWithOAuth({
       provider: 'google',
+      options: {
+        redirectTo,
+      },
     });
   }
 

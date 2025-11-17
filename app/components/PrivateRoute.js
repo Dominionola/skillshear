@@ -13,8 +13,8 @@ export default function PrivateRoute({ children }) {
   const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
-    // session === null → still loading Supabase session
-    if (session === null) {
+    // session === undefined → still loading Supabase session
+    if (session === undefined) {
       setIsChecking(true);
       return;
     }
