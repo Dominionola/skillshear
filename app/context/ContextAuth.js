@@ -55,6 +55,15 @@ export function ContextAuthProvider({ children }) {
     else setSession(null);
   };
 
+
+  // --- SIGN UP WITH GOOGLE ---
+  const signInWithGoogle = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: 'google',
+    });
+  }
+
+
   // --- RETURN PROVIDER ---
   return (
     <AuthContext.Provider
@@ -63,6 +72,7 @@ export function ContextAuthProvider({ children }) {
         signUpNewUser,
         signInUser,
         signOut,
+        signInWithGoogle,
       }}
     >
       {children}

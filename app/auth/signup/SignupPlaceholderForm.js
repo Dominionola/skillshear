@@ -17,7 +17,7 @@ export default function SignupPlaceholderForm() {
 
   const router = useRouter();
 
-const { session, signUpNewUser, signInUser, signout } = UserAuth();
+const { session, signUpNewUser, signInUser, signout, signInWithGoogle } = UserAuth();
   console.log("Current session:", session);
   console.log(email, password)
   const handleSignup = async (e) => {
@@ -38,6 +38,11 @@ const { session, signUpNewUser, signInUser, signout } = UserAuth();
 
   return (
     <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-lg">
+<div className="mb-3">
+        <button onClick={signInWithGoogle}
+        className="bg-blue-500 py-2 px-3 text-white rounded-xl ">countinue with google</button>
+      </div>
+
       <form onSubmit={handleSignup} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <label className="flex flex-col text-sm text-black">

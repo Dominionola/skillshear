@@ -36,6 +36,10 @@ const { session,  signInUser } = UserAuth();
 
   return (
     <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-lg">
+
+      <div>
+        <button className="bg-blue-600 ">countinue with google</button>
+      </div>
       <form onSubmit={handleSignin} className="space-y-4">
        
 
