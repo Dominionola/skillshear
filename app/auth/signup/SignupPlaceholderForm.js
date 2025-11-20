@@ -13,24 +13,53 @@ export default function SignupPlaceholderForm() {
   const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
-const { session, signUpNewUser, signInUser, signout, signInWithGoogle } = UserAuth();
-  console.log("Current session:", session);
-  console.log(email, password)
+  const { session, signUpNewUser, signInUser, signout, signInWithGoogle } = UserAuth();
+
   const handleSignup = async (e) => {
     e.preventDefault();
+    setError("");
     setLoading(true);
-    try{
-      const result = await signUpNewUser(email, password);
+
+    // Validation
+    if (!firstName.trim() || !lastName.trim()) {
+      setError("First name and last name are required.");
+      setLoading(false);
+      return;
+    }
+
+    if (!email.trim() || !password) {
+      setError("Email and password are required.");
+      setLoading(false);
+      return;
+    }
+
+    // Basic sanitization (trimming)
+    const cleanFirstName = firstName.trim();
+    const cleanLastName = lastName.trim();
+    const cleanEmail = email.trim();
+
+    // Regex for name validation (letters, spaces, hyphens, apostrophes)
+    const nameRegex = /^[a-zA-Z\s'-]+$/;
+    if (!nameRegex.test(cleanFirstName) || !nameRegex.test(cleanLastName)) {
+      setError("Names can only contain letters, spaces, hyphens, and apostrophes.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const result = await signUpNewUser(cleanEmail, password, cleanFirstName, cleanLastName);
       if (result.success) {
         router.push("/auth/confirm-email");
+      } else {
+        setError(result.error?.message || "An error occurred during signup.");
       }
     } catch (error) {
       setError(error.message);
-  } finally {
+    } finally {
       setLoading(false);
     }
 
@@ -38,9 +67,9 @@ const { session, signUpNewUser, signInUser, signout, signInWithGoogle } = UserAu
 
   return (
     <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-lg">
-<div className="mb-3">
+      <div className="mb-3">
         <button onClick={signInWithGoogle}
-        className="bg-blue-500 py-2 px-3 text-white rounded-xl ">countinue with google</button>
+          className="bg-blue-500 py-2 px-3 text-white rounded-xl ">countinue with google</button>
       </div>
 
       <form onSubmit={handleSignup} className="space-y-4">
@@ -48,8 +77,8 @@ const { session, signUpNewUser, signInUser, signout, signInWithGoogle } = UserAu
           <label className="flex flex-col text-sm text-black">
             First name
             <input
-            onChange={(e) => setFirstName
-            (e.target.value)}
+              onChange={(e) => setFirstName
+                (e.target.value)}
               className="mt-2 px-4 py-3 rounded-lg border border-gray-300 bg-transparent text-black placeholder:text-black"
               placeholder="First name"
             />
@@ -58,7 +87,7 @@ const { session, signUpNewUser, signInUser, signout, signInWithGoogle } = UserAu
           <label className="flex flex-col text-sm text-black">
             Last name
             <input
-            onChange={(e) => setLastName(e.target.value)}
+              onChange={(e) => setLastName(e.target.value)}
               className="mt-2 px-4 py-3 rounded-lg border border-gray-300 bg-transparent text-black placeholder:text-black"
               placeholder="Last name"
             />
@@ -68,7 +97,7 @@ const { session, signUpNewUser, signInUser, signout, signInWithGoogle } = UserAu
         <label className="flex flex-col text-sm text-black">
           Email
           <input
-          onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
             type="email"
             className="mt-2 w-full px-4 py-3 rounded-lg border border-gray-300 bg-transparent text-black placeholder:text-black"
             placeholder="you@example.com"
@@ -79,7 +108,7 @@ const { session, signUpNewUser, signInUser, signout, signInWithGoogle } = UserAu
           Password
           <div className="mt-2 relative">
             <input
-            onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               type={showPassword ? "text" : "password"}
               className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-transparent text-black placeholder:text-black"
               placeholder="Password (8 or more characters)"
@@ -102,14 +131,15 @@ const { session, signUpNewUser, signInUser, signout, signInWithGoogle } = UserAu
           </div>
         </label>
 
-        
+
 
         <div className="pt-2">
           <button
             type="Submit"
             className="w-full inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-black font-medium py-3 px-4 rounded-full"
+            disabled={loading}
           >
-            Sign Up
+            {loading ? "Signing Up..." : "Sign Up"}
           </button>
 
           {error && <p className="mt-4 text-red-500 text-sm">{error}</p>}

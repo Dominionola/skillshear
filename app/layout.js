@@ -1,7 +1,7 @@
 import { Geist, Geist_Mono, EB_Garamond, Poppins } from "next/font/google";
 import "./globals.css";
 import ConditionalNavbar from "./components/ConditionalNavbar";
-import { AuthContextProvider } from "./context/AuthContext";
+import { ContextAuthProvider } from "./context/ContextAuth";
 import PrivateRouter from "./components/PrivateRoute";
 
 const geistSans = Geist({
@@ -56,11 +56,11 @@ export default function RootLayout({ children }) {
       >
         <div className="flex flex-col">
           <ConditionalNavbar />
-          <AuthContextProvider>
+          <ContextAuthProvider>
 
             {children}
 
-          </AuthContextProvider>
+          </ContextAuthProvider>
         </div>
       </body>
     </html>

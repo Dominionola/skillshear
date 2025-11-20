@@ -15,20 +15,18 @@ export default function SigninPlaceholderForm() {
 
   const router = useRouter();
 
-const { session,  signInUser } = UserAuth();
-  console.log("Current session:", session);
-  console.log(email, password)
+  const { session, signInUser } = UserAuth();
   const handleSignin = async (e) => {
     e.preventDefault();
     setLoading(true);
-    try{
+    try {
       const result = await signInUser(email, password);
       if (result.success) {
         router.push("/dashboard");
-      } 
+      }
     } catch (error) {
       setError(error.message);
-  } finally {
+    } finally {
       setLoading(false);
     }
 
@@ -37,14 +35,14 @@ const { session,  signInUser } = UserAuth();
   return (
     <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-lg">
 
-      
+
       <form onSubmit={handleSignin} className="space-y-4">
-       
+
 
         <label className="flex flex-col text-sm text-black">
           Email
           <input
-          onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
             type="email"
             className="mt-2 w-full px-4 py-3 rounded-lg border border-gray-300 bg-transparent text-black placeholder:text-black"
             placeholder="you@example.com"
@@ -55,7 +53,7 @@ const { session,  signInUser } = UserAuth();
           Password
           <div className="mt-2 relative">
             <input
-            onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               type={showPassword ? "text" : "password"}
               className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-transparent text-black placeholder:text-black"
               placeholder="Password (8 or more characters)"
@@ -78,7 +76,7 @@ const { session,  signInUser } = UserAuth();
           </div>
         </label>
 
-        
+
 
         <div className="pt-2">
           <button

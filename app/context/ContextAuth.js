@@ -1,7 +1,9 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import supabase from "../supabaseClient";
+import { createClient } from "@/utils/supabase/client";
+
+const supabase = createClient();
 
 const AuthContext = createContext(null);
 
@@ -9,8 +11,18 @@ export function ContextAuthProvider({ children }) {
   const [session, setSession] = useState(undefined);
 
   // --- SIGN UP ---
-  const signUpNewUser = async (email, password) => {
-    const { data, error } = await supabase.auth.signUp({ email, password });
+  const signUpNewUser = async (email, password, firstName, lastName) => {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        data: {
+          first_name: firstName,
+          last_name: lastName,
+        },
+      },
+    });
     if (error) {
       console.error("Error signing up:", error);
       return { success: false, error };
@@ -24,9 +36,9 @@ export function ContextAuthProvider({ children }) {
       email,
       password,
       options: {
-      // After clicking the email confirmation link, user is redirected here
-      emailRedirectTo: `${location.origin}/signin`,
-    },
+        // After clicking the email confirmation link, user is redirected here
+        emailRedirectTo: `${location.origin}/signin`,
+      },
     });
 
     if (error) {
