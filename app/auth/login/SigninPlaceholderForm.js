@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ContextAuthProvider, UserAuth } from "@/app/context/ContextAuth";
+import Link from "next/link";
 
 
 export default function SigninPlaceholderForm() {
@@ -11,7 +12,7 @@ export default function SigninPlaceholderForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
@@ -34,11 +35,7 @@ export default function SigninPlaceholderForm() {
 
   return (
     <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-lg">
-
-
       <form onSubmit={handleSignin} className="space-y-4">
-
-
         <label className="flex flex-col text-sm text-black">
           Email
           <input
@@ -76,16 +73,24 @@ export default function SigninPlaceholderForm() {
           </div>
         </label>
 
-
-
         <div className="pt-2">
           <button
             type="Submit"
-            className="w-full md:w-1/2 mx-auto flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-black font-medium py-3 px-4 rounded-full"
+            className="w-full md:w-1/2 mx-auto flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-full"
+            disabled={loading}
           >
-            Sign In
+            {loading ? "Signing In..." : "Sign In"}
           </button>
 
+          <div className="mt-6 flex flex-col items-center gap-3">
+            <p className="text-gray-600 text-sm">Don't have an account?</p>
+            <Link
+              href="/auth/signup"
+              className="w-full md:w-1/2 flex items-center justify-center px-4 py-2.5 border border-blue-600 text-blue-600 font-medium rounded-full hover:bg-blue-50 transition-colors"
+            >
+              Sign Up
+            </Link>
+          </div>
           {error && <p className="mt-4 text-red-500 text-sm">{error}</p>}
         </div>
       </form>

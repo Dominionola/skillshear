@@ -56,7 +56,19 @@ export default function SignupPlaceholderForm() {
       if (result.success) {
         router.push("/auth/confirm-email");
       } else {
-        setError(result.error?.message || "An error occurred during signup.");
+        if (result.error?.message === "User already registered") {
+          setError(
+            <span>
+              This email is already registered. Please{" "}
+              <Link href="/auth/login" className="underline hover:text-blue-700">
+                Sign In
+              </Link>{" "}
+              instead.
+            </span>
+          );
+        } else {
+          setError(result.error?.message || "An error occurred during signup.");
+        }
       }
     } catch (error) {
       setError(error.message);
