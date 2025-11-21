@@ -16,7 +16,7 @@ export default function SigninPlaceholderForm() {
 
   const router = useRouter();
 
-  const { session, signInUser } = UserAuth();
+  const { session, signInUser, signInWithGoogle, signInWithGitHub } = UserAuth();
   const handleSignin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -35,6 +35,38 @@ export default function SigninPlaceholderForm() {
 
   return (
     <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-lg">
+      <div className="mb-6 flex flex-col md:flex-row gap-4 justify-center items-center">
+        <button
+          type="button"
+          onClick={signInWithGitHub}
+          className="flex items-center justify-center gap-3 w-full md:w-auto px-6 py-2.5 border border-gray-700 rounded-full bg-[#24292e] hover:bg-[#1b1f23] transition-colors"
+        >
+          <Image
+            src="/icons/github.svg"
+            alt="GitHub"
+            width={20}
+            height={20}
+          />
+          <span className="text-white font-medium">Continue with GitHub</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={signInWithGoogle}
+          className="flex items-center justify-between gap-3 w-full md:w-auto pl-4 pr-1 py-1.5 bg-[#1a73e8] hover:bg-[#1557b0] rounded-full transition-colors group"
+        >
+          <span className="text-white font-medium ml-2">Continue with Google</span>
+          <div className="bg-white p-1.5 rounded-full flex items-center justify-center">
+            <Image
+              src="/icons/google.svg"
+              alt="Google"
+              width={18}
+              height={18}
+            />
+          </div>
+        </button>
+      </div>
+
       <form onSubmit={handleSignin} className="space-y-4">
         <label className="flex flex-col text-sm text-black">
           Email

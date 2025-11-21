@@ -18,7 +18,7 @@ export default function SignupPlaceholderForm() {
 
   const router = useRouter();
 
-  const { session, signUpNewUser, signInUser, signout, signInWithGoogle } = UserAuth();
+  const { session, signUpNewUser, signInUser, signout, signInWithGoogle, signInWithGitHub } = UserAuth();
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -83,15 +83,16 @@ export default function SignupPlaceholderForm() {
       <div className="mb-6 flex flex-col md:flex-row gap-4 justify-center items-center">
         <button
           type="button"
-          className="flex items-center justify-center gap-3 w-full md:w-auto px-6 py-2.5 border border-gray-300 rounded-full bg-white hover:bg-gray-50 transition-colors"
+          onClick={signInWithGitHub}
+          className="flex items-center justify-center gap-3 w-full md:w-auto px-6 py-2.5 border border-gray-700 rounded-full bg-[#24292e] hover:bg-[#1b1f23] transition-colors"
         >
           <Image
-            src="/icons/apple.svg"
-            alt="Apple"
+            src="/icons/github.svg"
+            alt="GitHub"
             width={20}
             height={20}
           />
-          <span className="text-black font-medium">Continue with Apple</span>
+          <span className="text-white font-medium">Continue with GitHub</span>
         </button>
 
         <button

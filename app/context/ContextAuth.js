@@ -83,6 +83,17 @@ export function ContextAuthProvider({ children }) {
     });
   }
 
+  // --- SIGN IN WITH GITHUB ---
+  const signInWithGitHub = async () => {
+    const redirectTo = `${window.location.origin}/auth/callback`;
+    await supabase.auth.signInWithOAuth({
+      provider: 'github',
+      options: {
+        redirectTo,
+      },
+    });
+  }
+
 
   // --- RETURN PROVIDER ---
   return (
@@ -93,6 +104,7 @@ export function ContextAuthProvider({ children }) {
         signInUser,
         signOut,
         signInWithGoogle,
+        signInWithGitHub,
       }}
     >
       {children}
