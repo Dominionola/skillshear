@@ -81,7 +81,7 @@ export default function SigninPlaceholderForm() {
         <div className="pt-2">
           <button
             type="Submit"
-            className="w-full inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-black font-medium py-3 px-4 rounded-full"
+            className="w-full md:w-1/2 mx-auto flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-black font-medium py-3 px-4 rounded-full"
           >
             Sign In
           </button>

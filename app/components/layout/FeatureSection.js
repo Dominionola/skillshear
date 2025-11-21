@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { motion } from "framer-motion";
 
 export default function FeatureSection() {
   const features = [
@@ -54,9 +57,13 @@ export default function FeatureSection() {
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {features.map((f) => (
-            <div
+          {features.map((f, index) => (
+            <motion.div
               key={f.title}
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              viewport={{ once: true }}
               className="group hover:text-blue-600 bg-blue-600 rounded-2xl p-6 shadow-sm transition-shadow hover:shadow-md hover:bg-[radial-gradient(circle,hsla(224,89%,83%,1)_0%,hsla(0,0%,100%,1)_100%)]"
             >
               <div className="w-10 h-10 relative flex items-center justify-center rounded-md mb-4">
@@ -81,7 +88,7 @@ export default function FeatureSection() {
               <p className="text-lg text-white group-hover:text-blue-600">
                 {f.desc}
               </p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
