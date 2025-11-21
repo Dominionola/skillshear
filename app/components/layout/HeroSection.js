@@ -94,14 +94,14 @@ export default function HeroSection() {
                     alt="Heart icon"
                     width={16}
                     height={16}
-                    className="inline-block rotate-[-12deg] "
+                    className="inline-block rotate-[-12deg] w-4 h-auto"
                   />
                   <Image
                     src="/icons/heart.svg"
                     alt="Heart icon"
                     width={16}
                     height={16}
-                    className="inline-block mb-1 -mt-2 rotate-12"
+                    className="inline-block mb-1 -mt-2 rotate-12 w-4 h-auto"
                   />
                 </span>
                 <span className="text-sm text-gray-700">
@@ -112,7 +112,7 @@ export default function HeroSection() {
           </div>
         </div>
       </div>
-  <div className="mt-8 mx-auto rounded-3xl overflow-hidden w-full md:max-w-[1000px] xl:max-w-[1400px]">
+      <div className="mt-8 mx-auto rounded-3xl overflow-hidden w-full md:max-w-[1000px] xl:max-w-[1400px]">
         {/* inner padded wrapper keeps padding inside the rounded container and also clips content */}
         <div className="p-4 md:p-6 bg-transparent overflow-hidden rounded-3xl">
           <MotionHeroImage />
