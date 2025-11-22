@@ -11,6 +11,7 @@ export default function ProfilePage() {
     const router = useRouter()
     const [profile, setProfile] = useState(null)
     const [loading, setLoading] = useState(true)
+    const [daysActive, setDaysActive] = useState(0)
 
     // Get user data
     const firstName = session?.user?.user_metadata?.first_name || ''
@@ -23,7 +24,7 @@ export default function ProfilePage() {
         year: 'numeric'
     })
 
-    // Load profile data
+    // Load profile data and calculate stats
     useEffect(() => {
         async function loadProfile() {
             if (session?.user?.id) {
@@ -31,18 +32,32 @@ export default function ProfilePage() {
                 if (!error && data) {
                     setProfile(data)
                 }
+
+                // Calculate days active
+                if (session?.user?.created_at) {
+                    const created = new Date(session.user.created_at)
+                    const now = new Date()
+                    const diffTime = Math.abs(now - created)
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+                    setDaysActive(diffDays)
+                }
+
                 setLoading(false)
             }
         }
         loadProfile()
     }, [session])
 
-    // Placeholder stats - will be replaced with real data later
+    // Stats with real data where available
     const userStats = [
-        { icon: HiStar, label: 'Total Points', value: '0', color: 'text-yellow-500' },
-        { icon: HiBadgeCheck, label: 'Achievements', value: '0', color: 'text-blue-600' },
-        { icon: HiCalendar, label: 'Days Active', value: '1', color: 'text-green-600' },
+        { icon: HiStar, label: 'Total Points', value: '0', color: 'text-yellow-500' }, // Placeholder until gamification
+        { icon: HiBadgeCheck, label: 'Achievements', value: '0', color: 'text-blue-600' }, // Placeholder until gamification
+        { icon: HiCalendar, label: 'Days Active', value: daysActive.toString(), color: 'text-green-600' },
     ]
+
+    if (loading) {
+        return <div className="p-6 text-center">Loading profile...</div>
+    }
 
     return (
         <div className="space-y-6">
