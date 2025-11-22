@@ -1,5 +1,5 @@
 -- Create courses table
-create table public.courses (
+create table if not exists public.courses (
   id uuid default gen_random_uuid() primary key,
   title text not null,
   description text,
@@ -14,7 +14,7 @@ create table public.courses (
 );
 
 -- Create modules table
-create table public.modules (
+create table if not exists public.modules (
   id uuid default gen_random_uuid() primary key,
   course_id uuid references public.courses(id) on delete cascade not null,
   title text not null,
@@ -25,7 +25,7 @@ create table public.modules (
 );
 
 -- Create lessons table
-create table public.lessons (
+create table if not exists public.lessons (
   id uuid default gen_random_uuid() primary key,
   module_id uuid references public.modules(id) on delete cascade not null,
   title text not null,
@@ -40,7 +40,7 @@ create table public.lessons (
 );
 
 -- Create enrollments table
-create table public.enrollments (
+create table if not exists public.enrollments (
   id uuid default gen_random_uuid() primary key,
   user_id uuid references auth.users(id) on delete cascade not null,
   course_id uuid references public.courses(id) on delete cascade not null,
@@ -51,7 +51,7 @@ create table public.enrollments (
 );
 
 -- Create lesson_completions table to track individual lesson progress
-create table public.lesson_completions (
+create table if not exists public.lesson_completions (
   id uuid default gen_random_uuid() primary key,
   user_id uuid references auth.users(id) on delete cascade not null,
   lesson_id uuid references public.lessons(id) on delete cascade not null,
@@ -63,30 +63,36 @@ create table public.lesson_completions (
 
 -- Courses: Public read access for published courses
 alter table public.courses enable row level security;
+drop policy if exists "Published courses are viewable by everyone" on public.courses;
 create policy "Published courses are viewable by everyone"
   on public.courses for select
   using ( published = true );
 
 -- Instructors can view all their own courses (even unpublished)
+drop policy if exists "Instructors can view their own courses" on public.courses;
 create policy "Instructors can view their own courses"
   on public.courses for select
   using ( auth.uid() = instructor_id );
 
 -- Instructors can insert/update/delete their own courses
+drop policy if exists "Instructors can insert their own courses" on public.courses;
 create policy "Instructors can insert their own courses"
   on public.courses for insert
   with check ( auth.uid() = instructor_id );
 
+drop policy if exists "Instructors can update their own courses" on public.courses;
 create policy "Instructors can update their own courses"
   on public.courses for update
   using ( auth.uid() = instructor_id );
 
+drop policy if exists "Instructors can delete their own courses" on public.courses;
 create policy "Instructors can delete their own courses"
   on public.courses for delete
   using ( auth.uid() = instructor_id );
 
 -- Modules & Lessons: Viewable if course is published or user is instructor
 alter table public.modules enable row level security;
+drop policy if exists "Modules viewable by everyone if course is published" on public.modules;
 create policy "Modules viewable by everyone if course is published"
   on public.modules for select
   using ( exists (
@@ -96,6 +102,7 @@ create policy "Modules viewable by everyone if course is published"
   ));
 
 alter table public.lessons enable row level security;
+drop policy if exists "Lessons viewable by everyone if course is published" on public.lessons;
 create policy "Lessons viewable by everyone if course is published"
   on public.lessons for select
   using ( exists (
@@ -107,20 +114,24 @@ create policy "Lessons viewable by everyone if course is published"
 
 -- Enrollments: Users can view and create their own enrollments
 alter table public.enrollments enable row level security;
+drop policy if exists "Users can view their own enrollments" on public.enrollments;
 create policy "Users can view their own enrollments"
   on public.enrollments for select
   using ( auth.uid() = user_id );
 
+drop policy if exists "Users can enroll themselves" on public.enrollments;
 create policy "Users can enroll themselves"
   on public.enrollments for insert
   with check ( auth.uid() = user_id );
 
 -- Lesson Completions: Users can view and manage their own completions
 alter table public.lesson_completions enable row level security;
+drop policy if exists "Users can view their own completions" on public.lesson_completions;
 create policy "Users can view their own completions"
   on public.lesson_completions for select
   using ( auth.uid() = user_id );
 
+drop policy if exists "Users can mark lessons as complete" on public.lesson_completions;
 create policy "Users can mark lessons as complete"
   on public.lesson_completions for insert
   with check ( auth.uid() = user_id );

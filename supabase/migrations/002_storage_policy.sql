@@ -1,13 +1,16 @@
 -- Create a storage bucket for avatars
 insert into storage.buckets (id, name, public)
-values ('avatars', 'avatars', true);
+values ('avatars', 'avatars', true)
+on conflict (id) do nothing;
 
 -- Policy: Allow public access to view avatars
+drop policy if exists "Avatar images are publicly accessible" on storage.objects;
 create policy "Avatar images are publicly accessible"
   on storage.objects for select
   using ( bucket_id = 'avatars' );
 
 -- Policy: Allow authenticated users to upload their own avatar
+drop policy if exists "Users can upload their own avatar" on storage.objects;
 create policy "Users can upload their own avatar"
   on storage.objects for insert
   with check (
@@ -16,6 +19,7 @@ create policy "Users can upload their own avatar"
   );
 
 -- Policy: Allow users to update their own avatar
+drop policy if exists "Users can update their own avatar" on storage.objects;
 create policy "Users can update their own avatar"
   on storage.objects for update
   using (
@@ -24,6 +28,7 @@ create policy "Users can update their own avatar"
   );
 
 -- Policy: Allow users to delete their own avatar
+drop policy if exists "Users can delete their own avatar" on storage.objects;
 create policy "Users can delete their own avatar"
   on storage.objects for delete
   using (
