@@ -1,6 +1,7 @@
 "use client"
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import {
     HiHome,
@@ -47,8 +48,14 @@ export default function Sidebar({ isOpen, setIsOpen }) {
                 {/* Logo & Close Button */}
                 <div className="flex items-center justify-between p-6 border-b border-gray-200">
                     <Link href="/dashboard" className="flex items-center space-x-2">
-                        <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                            <span className="text-white font-bold text-xl">S</span>
+                        <div className="w-8 h-8 flex items-center justify-center">
+                            <Image
+                                src="/logo.png"
+                                alt="SkillShear Logo"
+                                width={32}
+                                height={32}
+                                className="w-full h-full object-contain"
+                            />
                         </div>
                         <span className="text-xl font-bold text-gray-900">
                             SkillShear

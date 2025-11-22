@@ -56,10 +56,18 @@ export default function ProfilePage() {
                     {/* Avatar */}
                     <div className="flex items-end justify-between -mt-16 mb-4">
                         <div className="relative">
-                            <div className="w-32 h-32 bg-blue-600 rounded-full flex items-center justify-center border-4 border-white shadow-lg">
-                                <span className="text-white font-bold text-4xl">
-                                    {userName.charAt(0).toUpperCase()}
-                                </span>
+                            <div className="w-32 h-32 bg-blue-600 rounded-full flex items-center justify-center border-4 border-white shadow-lg overflow-hidden">
+                                {profile?.avatar_url ? (
+                                    <img
+                                        src={profile.avatar_url}
+                                        alt="Profile"
+                                        className="w-full h-full object-cover"
+                                    />
+                                ) : (
+                                    <span className="text-white font-bold text-4xl">
+                                        {userName.charAt(0).toUpperCase()}
+                                    </span>
+                                )}
                             </div>
                             {/* Level badge */}
                             <div className="absolute bottom-0 right-0 bg-yellow-500 text-white text-xs font-bold px-3 py-1 rounded-full border-2 border-white shadow-sm">
