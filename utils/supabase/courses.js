@@ -8,7 +8,7 @@ export async function getCourses() {
         .from('courses')
         .select(`
             *,
-            instructor:instructor_id (
+            profiles!instructor_id (
                 first_name,
                 last_name,
                 avatar_url
@@ -17,7 +17,19 @@ export async function getCourses() {
         .eq('published', true)
         .order('created_at', { ascending: false })
 
-    return { data, error }
+    if (error) {
+        console.error('Error fetching courses:', error)
+        return { data: null, error }
+    }
+
+    // Rename profiles to instructor for easier access
+    const coursesWithInstructor = data?.map(course => ({
+        ...course,
+        instructor: course.profiles,
+        profiles: undefined
+    }))
+
+    return { data: coursesWithInstructor, error: null }
 }
 
 // Fetch a single course by ID with modules and lessons
