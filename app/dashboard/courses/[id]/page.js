@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { UserAuth } from "@/app/context/ContextAuth"
 import { getCourse, enrollInCourse, checkEnrollment } from '@/utils/supabase/courses'
 import { HiArrowLeft, HiBookOpen, HiCheckCircle, HiLockClosed, HiPlay, HiUser, HiClock } from 'react-icons/hi'
+import toast from 'react-hot-toast'
 
 export default function CourseDetailsPage() {
     const { id } = useParams()
@@ -41,6 +42,7 @@ export default function CourseDetailsPage() {
 
     const handleEnroll = async () => {
         if (!session) {
+            toast.error('Please sign in to enroll in this course')
             router.push('/auth/signin')
             return
         }
@@ -50,7 +52,19 @@ export default function CourseDetailsPage() {
 
         if (!error) {
             setEnrolled(true)
-            // Optional: Show success message or redirect to first lesson
+            toast.success('Successfully enrolled in the course!', {
+                duration: 4000,
+                icon: '🎉',
+            })
+        } else {
+            console.error('Enrollment error:', error)
+            if (error.code === '23505') {
+                // Unique constraint violation - already enrolled
+                toast.error('You are already enrolled in this course')
+                setEnrolled(true)
+            } else {
+                toast.error('Failed to enroll. Please try again.')
+            }
         }
         setEnrolling(false)
     }

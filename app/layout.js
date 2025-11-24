@@ -3,6 +3,7 @@ import "./globals.css";
 import ConditionalNavbar from "./components/ConditionalNavbar";
 import { ContextAuthProvider } from "./context/ContextAuth";
 import PrivateRouter from "./components/PrivateRoute";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -54,6 +55,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${ebGaramond.variable} ${poppins.variable} antialiased`}
       >
+        <Toaster position="top-right" />
         <div className="flex flex-col">
           <ConditionalNavbar />
           <ContextAuthProvider>

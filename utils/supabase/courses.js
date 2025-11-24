@@ -38,7 +38,7 @@ export async function getCourse(courseId) {
         .from('courses')
         .select(`
             *,
-            instructor:instructor_id (
+            profiles!instructor_id (
                 first_name,
                 last_name,
                 avatar_url,
@@ -54,6 +54,11 @@ export async function getCourse(courseId) {
         .eq('id', courseId)
         .single()
 
+    if (error) {
+        console.error('Error fetching course:', error)
+        return { data: null, error }
+    }
+
     // Sort modules and lessons by order_index
     if (data && data.modules) {
         data.modules.sort((a, b) => a.order_index - b.order_index)
@@ -64,7 +69,14 @@ export async function getCourse(courseId) {
         })
     }
 
-    return { data, error }
+    // Rename profiles to instructor for easier access
+    const courseWithInstructor = {
+        ...data,
+        instructor: data.profiles,
+        profiles: undefined
+    }
+
+    return { data: courseWithInstructor, error: null }
 }
 
 // Enroll a user in a course
