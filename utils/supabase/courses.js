@@ -111,13 +111,29 @@ export async function getStudentEnrollments(userId) {
             *,
             course:course_id (
                 *,
-                instructor:instructor_id (
+                profiles!instructor_id (
                     first_name,
-                    last_name
+                    last_name,
+                    avatar_url
                 )
             )
         `)
         .eq('user_id', userId)
 
-    return { data, error }
+    if (error) {
+        console.error('Error fetching enrollments:', error)
+        return { data: null, error }
+    }
+
+    // Transform the data to rename profiles to instructor
+    const enrollmentsWithInstructor = data?.map(enrollment => ({
+        ...enrollment,
+        course: enrollment.course ? {
+            ...enrollment.course,
+            instructor: enrollment.course.profiles,
+            profiles: undefined
+        } : null
+    }))
+
+    return { data: enrollmentsWithInstructor, error: null }
 }
