@@ -64,7 +64,15 @@ export default function ProfilePage() {
             {/* Profile Header */}
             <div className="bg-white rounded-xl overflow-hidden border border-gray-200 shadow-sm">
                 {/* Cover Image */}
-                <div className="h-32 bg-blue-600" />
+                <div className="h-64 bg-gradient-to-br from-blue-500 to-blue-700 relative overflow-hidden">
+                    {profile?.banner_url && (
+                        <img
+                            src={profile.banner_url}
+                            alt="Profile Banner"
+                            className="w-full h-full object-cover object-center"
+                        />
+                    )}
+                </div>
 
                 {/* Profile Info */}
                 <div className="px-6 pb-6">

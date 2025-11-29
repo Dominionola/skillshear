@@ -15,7 +15,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-
 const ebGaramond = EB_Garamond({
   variable: "--font-eb-garamond",
   subsets: ["latin"],
@@ -24,7 +23,7 @@ const ebGaramond = EB_Garamond({
 const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"], // Add weights as needed
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata = {

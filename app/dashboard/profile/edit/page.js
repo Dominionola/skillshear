@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { UserAuth } from "@/app/context/ContextAuth"
 import { useRouter } from "next/navigation"
-import { getProfile, updateProfile, uploadAvatar } from '@/utils/supabase/profile'
+import { getProfile, updateProfile, uploadAvatar, uploadBanner } from '@/utils/supabase/profile'
 import { HiCamera, HiSave } from 'react-icons/hi'
 
 export default function EditProfilePage() {
@@ -20,7 +20,8 @@ export default function EditProfilePage() {
         website: '',
         twitter: '',
         linkedin: '',
-        avatar_url: ''
+        avatar_url: '',
+        banner_url: ''
     })
 
     useEffect(() => {
@@ -35,7 +36,8 @@ export default function EditProfilePage() {
                         website: data.website || '',
                         twitter: data.twitter || '',
                         linkedin: data.linkedin || '',
-                        avatar_url: data.avatar_url || ''
+                        avatar_url: data.avatar_url || '',
+                        banner_url: data.banner_url || ''
                     })
                 }
                 setLoading(false)
@@ -64,6 +66,26 @@ export default function EditProfilePage() {
             setMessage({ type: 'success', text: 'Avatar updated successfully!' })
         } catch (error) {
             setMessage({ type: 'error', text: 'Error uploading avatar: ' + error.message })
+        } finally {
+            setSaving(false)
+        }
+    }
+
+    const handleBannerChange = async (e) => {
+        if (!e.target.files || e.target.files.length === 0) return
+
+        const file = e.target.files[0]
+        setSaving(true)
+        setMessage({ type: 'info', text: 'Uploading banner...' })
+
+        try {
+            const { data, error } = await uploadBanner(session.user.id, file)
+            if (error) throw error
+
+            setFormData(prev => ({ ...prev, banner_url: data.banner_url }))
+            setMessage({ type: 'success', text: 'Banner updated successfully!' })
+        } catch (error) {
+            setMessage({ type: 'error', text: 'Error uploading banner: ' + error.message })
         } finally {
             setSaving(false)
         }
@@ -104,14 +126,53 @@ export default function EditProfilePage() {
 
             {message.text && (
                 <div className={`p-4 rounded-lg ${message.type === 'success' ? 'bg-green-50 text-green-700' :
-                        message.type === 'error' ? 'bg-red-50 text-red-700' :
-                            'bg-blue-50 text-blue-700'
+                    message.type === 'error' ? 'bg-red-50 text-red-700' :
+                        'bg-blue-50 text-blue-700'
                     }`}>
                     {message.text}
                 </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Banner Upload */}
+                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                    <h2 className="text-lg font-semibold text-gray-900 mb-4">Profile Banner</h2>
+                    <div className="relative w-full h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg overflow-hidden border-2 border-dashed border-gray-300 flex items-center justify-center group">
+                        {formData.banner_url ? (
+                            <img
+                                src={formData.banner_url}
+                                alt="Banner"
+                                className="w-full h-full object-cover object-center"
+                            />
+                        ) : (
+                            <div className="text-center text-gray-500">
+                                <HiCamera className="w-8 h-8 mx-auto mb-2" />
+                                <p>Click to upload banner</p>
+                                <p className="text-xs mt-1">Best: 1200x400px (3:1 ratio)</p>
+                            </div>
+                        )}
+                        <label className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 flex items-center justify-center transition-all cursor-pointer">
+                            <div className="text-white opacity-0 group-hover:opacity-100 font-medium flex items-center space-x-2">
+                                <HiCamera className="w-5 h-5" />
+                                <span>Change Banner</span>
+                            </div>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleBannerChange}
+                                className="hidden"
+                                disabled={saving}
+                            />
+                        </label>
+                    </div>
+                    <div className="mt-2 text-sm text-gray-500 space-y-1">
+                        <p><strong>Recommended:</strong> 1200x400px (3:1 aspect ratio) for best results</p>
+                        <p className="text-xs">• Supported formats: JPG, PNG, or GIF</p>
+                        <p className="text-xs">• Maximum file size: 5MB</p>
+                        <p className="text-xs text-amber-600">• Images with different ratios will be cropped to fit</p>
+                    </div>
+                </div>
+
                 {/* Avatar Upload */}
                 <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
                     <h2 className="text-lg font-semibold text-gray-900 mb-4">Profile Picture</h2>
