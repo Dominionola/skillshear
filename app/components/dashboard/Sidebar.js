@@ -1,8 +1,12 @@
 "use client"
 
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
+import { UserAuth } from "@/app/context/ContextAuth"
+import { getProfileRole, becomeInstructor } from '@/utils/supabase/profile'
+import toast from 'react-hot-toast'
 import {
     HiHome,
     HiBookOpen,
@@ -11,7 +15,8 @@ import {
     HiUser,
     HiCog,
     HiX,
-    HiMenu
+    HiMenu,
+    HiAcademicCap
 } from 'react-icons/hi'
 
 const navigationItems = [
@@ -25,6 +30,36 @@ const navigationItems = [
 
 export default function Sidebar({ isOpen, setIsOpen }) {
     const pathname = usePathname()
+    const router = useRouter()
+    const { session } = UserAuth()
+    const [role, setRole] = useState('student')
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        async function fetchRole() {
+            if (session?.user?.id) {
+                const { role } = await getProfileRole(session.user.id)
+                setRole(role)
+            }
+            setLoading(false)
+        }
+        fetchRole()
+    }, [session])
+
+    const handleBecomeInstructor = async () => {
+        if (!session?.user?.id) return
+
+        const toastId = toast.loading('Setting up your instructor account...')
+        const { error } = await becomeInstructor(session.user.id)
+
+        if (error) {
+            toast.error('Failed to update role', { id: toastId })
+        } else {
+            toast.success('You are now an instructor!', { id: toastId })
+            setRole('instructor')
+            router.push('/instructor')
+        }
+    }
 
     return (
         <>
@@ -41,7 +76,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
                 className={`
                     fixed top-0 left-0 z-50 h-full w-64 bg-white
                     border-r border-gray-200 transform transition-transform duration-300 ease-in-out
-                    lg:translate-x-0 lg:static lg:z-auto
+                    lg:translate-x-0 lg:static lg:z-auto flex flex-col
                     ${isOpen ? 'translate-x-0' : '-translate-x-full'}
                 `}
             >
@@ -72,7 +107,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
                 </div>
 
                 {/* Navigation */}
-                <nav className="p-4 space-y-2">
+                <nav className="p-4 space-y-2 flex-1 overflow-y-auto">
                     {navigationItems.map((item) => {
                         const isActive = pathname === item.href
                         const Icon = item.icon
@@ -96,6 +131,29 @@ export default function Sidebar({ isOpen, setIsOpen }) {
                         )
                     })}
                 </nav>
+
+                {/* Instructor CTA */}
+                {!loading && (
+                    <div className="p-4 border-t border-gray-200">
+                        {role === 'instructor' ? (
+                            <Link
+                                href="/instructor"
+                                className="flex items-center justify-center w-full bg-purple-600 text-white px-4 py-3 rounded-lg hover:bg-purple-700 transition-colors font-medium shadow-sm"
+                            >
+                                <HiAcademicCap className="w-5 h-5 mr-2" />
+                                Instructor View
+                            </Link>
+                        ) : (
+                            <button
+                                onClick={handleBecomeInstructor}
+                                className="flex items-center justify-center w-full bg-gray-900 text-white px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors font-medium shadow-sm"
+                            >
+                                <HiAcademicCap className="w-5 h-5 mr-2" />
+                                Become an Instructor
+                            </button>
+                        )}
+                    </div>
+                )}
             </aside>
         </>
     )

@@ -133,3 +133,28 @@ export async function uploadBanner(userId, file) {
 
     return { data: { ...data, banner_url: publicUrl }, error }
 }
+
+export async function getProfileRole(userId) {
+    const supabase = createClient()
+
+    const { data, error } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', userId)
+        .single()
+
+    return { role: data?.role || 'student', error }
+}
+
+export async function becomeInstructor(userId) {
+    const supabase = createClient()
+
+    const { data, error } = await supabase
+        .from('profiles')
+        .update({ role: 'instructor' })
+        .eq('id', userId)
+        .select()
+        .single()
+
+    return { data, error }
+}

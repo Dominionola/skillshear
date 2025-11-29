@@ -107,13 +107,14 @@ Last Updated: November 23, 2024
 - [x] Auto-calculate course progress %
 - [x] Database function for progress updates
 
-### Phase 3: Instructor Features (Next Priority)
-#### 1. **Instructor Dashboard** 👨‍🏫
-- [ ] "Teach" mode toggle or separate area
-- [ ] List of created courses
-- [ ] Course analytics (enrollment counts)
+### Phase 3: Instructor Features (In Progress)
+#### 1. **Instructor Dashboard** 👨‍🏫 (COMPLETED)
+- [x] "Teach" mode toggle (Self-Serve "Become Instructor" flow)
+- [x] List of created courses
+- [x] Instructor-specific layout & sidebar
+- [x] Dashboard stats overview (UI)
 
-#### 2. **Course Creation Studio** ✍️
+#### 2. **Course Creation Studio** ✍️ (Next Priority)
 - [ ] Basic course details form (Title, Desc, Category)
 - [ ] Module & Lesson management
 - [ ] Content upload (Video/Text)

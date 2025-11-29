@@ -186,3 +186,49 @@ export async function toggleLessonCompletion(userId, lessonId, courseId) {
 
     return { progress, completed: !completed, error: funcError }
 }
+
+// Create a new course
+export async function createCourse(courseData) {
+    const { data, error } = await supabase
+        .from('courses')
+        .insert([courseData])
+        .select()
+        .single()
+
+    return { data, error }
+}
+
+// Upload course thumbnail to Supabase Storage
+export async function uploadCourseThumbnail(courseId, file) {
+    // Create a unique file name
+    const fileExt = file.name.split('.').pop()
+    const fileName = `${courseId}-thumbnail-${Date.now()}.${fileExt}`
+    const filePath = `${courseId}/${fileName}`
+
+    // Upload file to storage
+    const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('thumbnails')
+        .upload(filePath, file, {
+            cacheControl: '3600',
+            upsert: true
+        })
+
+    if (uploadError) {
+        return { data: null, error: uploadError }
+    }
+
+    // Get public URL
+    const { data: { publicUrl } } = supabase.storage
+        .from('thumbnails')
+        .getPublicUrl(filePath)
+
+    // Update course with thumbnail URL
+    const { data, error } = await supabase
+        .from('courses')
+        .update({ thumbnail_url: publicUrl })
+        .eq('id', courseId)
+        .select()
+        .single()
+
+    return { data, error }
+}
