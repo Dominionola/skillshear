@@ -137,3 +137,52 @@ export async function getStudentEnrollments(userId) {
 
     return { data: enrollmentsWithInstructor, error: null }
 }
+
+// Check if a lesson is completed by the user
+export async function getLessonCompletion(userId, lessonId) {
+    const { data, error } = await supabase
+        .from('lesson_completions')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('lesson_id', lessonId)
+        .single()
+
+    return { completed: !!data, error }
+}
+
+// Toggle lesson completion status
+export async function toggleLessonCompletion(userId, lessonId, courseId) {
+    // First check if already completed
+    const { completed } = await getLessonCompletion(userId, lessonId)
+
+    let error = null
+
+    if (completed) {
+        // Remove completion
+        const { error: deleteError } = await supabase
+            .from('lesson_completions')
+            .delete()
+            .eq('user_id', userId)
+            .eq('lesson_id', lessonId)
+        error = deleteError
+    } else {
+        // Add completion
+        const { error: insertError } = await supabase
+            .from('lesson_completions')
+            .insert([
+                { user_id: userId, lesson_id: lessonId }
+            ])
+        error = insertError
+    }
+
+    if (error) return { error }
+
+    // Update overall course progress using our database function
+    const { data: progress, error: funcError } = await supabase
+        .rpc('update_enrollment_progress', {
+            p_user_id: userId,
+            p_course_id: courseId
+        })
+
+    return { progress, completed: !completed, error: funcError }
+}

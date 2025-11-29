@@ -69,7 +69,8 @@ export default function ProfilePage() {
                         <img
                             src={profile.banner_url}
                             alt="Profile Banner"
-                            className="w-full h-full object-cover object-center"
+                            className="w-full h-full object-cover"
+                            style={{ objectPosition: `center ${profile.banner_position || 50}%` }}
                         />
                     )}
                 </div>

@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react'
 import { UserAuth } from "@/app/context/ContextAuth"
 import { useRouter } from "next/navigation"
 import { getProfile, updateProfile, uploadAvatar, uploadBanner } from '@/utils/supabase/profile'
-import { HiCamera, HiSave } from 'react-icons/hi'
+import { HiCamera, HiSave, HiAdjustments } from 'react-icons/hi'
+import BannerRepositioner from '@/app/components/BannerRepositioner'
 
 export default function EditProfilePage() {
     const { session } = UserAuth()
@@ -12,6 +13,7 @@ export default function EditProfilePage() {
     const [loading, setLoading] = useState(true)
     const [saving, setSaving] = useState(false)
     const [message, setMessage] = useState({ type: '', text: '' })
+    const [showRepositioner, setShowRepositioner] = useState(false)
 
     const [formData, setFormData] = useState({
         first_name: '',
@@ -21,7 +23,8 @@ export default function EditProfilePage() {
         twitter: '',
         linkedin: '',
         avatar_url: '',
-        banner_url: ''
+        banner_url: '',
+        banner_position: 50
     })
 
     useEffect(() => {
@@ -37,7 +40,8 @@ export default function EditProfilePage() {
                         twitter: data.twitter || '',
                         linkedin: data.linkedin || '',
                         avatar_url: data.avatar_url || '',
-                        banner_url: data.banner_url || ''
+                        banner_url: data.banner_url || '',
+                        banner_position: data.banner_position || 50
                     })
                 }
                 setLoading(false)
@@ -108,6 +112,24 @@ export default function EditProfilePage() {
         }
     }
 
+    const handleSavePosition = async (position) => {
+        setSaving(true)
+        setMessage({ type: 'info', text: 'Saving banner position...' })
+
+        try {
+            const { error } = await updateProfile(session.user.id, { banner_position: position })
+            if (error) throw error
+
+            setFormData(prev => ({ ...prev, banner_position: position }))
+            setShowRepositioner(false)
+            setMessage({ type: 'success', text: 'Banner position updated!' })
+        } catch (error) {
+            setMessage({ type: 'error', text: 'Error saving position: ' + error.message })
+        } finally {
+            setSaving(false)
+        }
+    }
+
     if (loading) {
         return <div className="p-6 text-center">Loading profile...</div>
     }
@@ -142,13 +164,14 @@ export default function EditProfilePage() {
                             <img
                                 src={formData.banner_url}
                                 alt="Banner"
-                                className="w-full h-full object-cover object-center"
+                                className="w-full h-full object-cover"
+                                style={{ objectPosition: `center ${formData.banner_position}%` }}
                             />
                         ) : (
                             <div className="text-center text-gray-500">
                                 <HiCamera className="w-8 h-8 mx-auto mb-2" />
                                 <p>Click to upload banner</p>
-                                <p className="text-xs mt-1">Best: 1200x400px (3:1 ratio)</p>
+                                <p className="text-xs mt-1">Best: 1500x500px (Twitter/X size)</p>
                             </div>
                         )}
                         <label className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 flex items-center justify-center transition-all cursor-pointer">
@@ -165,11 +188,22 @@ export default function EditProfilePage() {
                             />
                         </label>
                     </div>
-                    <div className="mt-2 text-sm text-gray-500 space-y-1">
-                        <p><strong>Recommended:</strong> 1200x400px (3:1 aspect ratio) for best results</p>
-                        <p className="text-xs">• Supported formats: JPG, PNG, or GIF</p>
-                        <p className="text-xs">• Maximum file size: 5MB</p>
-                        <p className="text-xs text-amber-600">• Images with different ratios will be cropped to fit</p>
+                    <div className="mt-4 flex items-center justify-between">
+                        <div className="text-sm text-gray-500 space-y-1">
+                            <p><strong>Recommended:</strong> 1500x500px</p>
+                            <p className="text-xs">• Supported formats: JPG, PNG, or GIF</p>
+                            <p className="text-xs">• Maximum file size: 5MB</p>
+                        </div>
+                        {formData.banner_url && (
+                            <button
+                                type="button"
+                                onClick={() => setShowRepositioner(true)}
+                                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"
+                            >
+                                <HiAdjustments className="w-4 h-4" />
+                                <span>Reposition Banner</span>
+                            </button>
+                        )}
                     </div>
                 </div>
 
@@ -305,6 +339,16 @@ export default function EditProfilePage() {
                     </button>
                 </div>
             </form>
+
+            {/* Banner Repositioner Modal */}
+            {showRepositioner && formData.banner_url && (
+                <BannerRepositioner
+                    imageUrl={formData.banner_url}
+                    currentPosition={formData.banner_position}
+                    onSave={handleSavePosition}
+                    onClose={() => setShowRepositioner(false)}
+                />
+            )}
         </div>
     )
 }
