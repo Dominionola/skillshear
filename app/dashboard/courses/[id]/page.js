@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { UserAuth } from "@/app/context/ContextAuth"
-import { getCourse, enrollInCourse, checkEnrollment } from '@/utils/supabase/courses'
+import { getCourse, enrollInCourse, checkEnrollment, toggleLessonCompletion, getLessonCompletion } from '@/utils/supabase/courses'
 import { HiArrowLeft, HiBookOpen, HiCheckCircle, HiLockClosed, HiPlay, HiUser, HiClock } from 'react-icons/hi'
 import toast from 'react-hot-toast'
 
@@ -16,6 +16,8 @@ export default function CourseDetailsPage() {
     const [loading, setLoading] = useState(true)
     const [enrolled, setEnrolled] = useState(false)
     const [enrolling, setEnrolling] = useState(false)
+    const [completedLessons, setCompletedLessons] = useState({})
+    const [courseProgress, setCourseProgress] = useState(0)
 
     useEffect(() => {
         async function loadCourseData() {
@@ -26,11 +28,28 @@ export default function CourseDetailsPage() {
                     setCourse(courseData)
                 }
 
-                // Check enrollment if user is logged in
+                // Check enrollment and progress if user is logged in
                 if (session?.user?.id) {
                     const { data: enrollmentData } = await checkEnrollment(session.user.id, id)
                     if (enrollmentData) {
                         setEnrolled(true)
+                        setCourseProgress(enrollmentData.progress || 0)
+
+                        // Load completion status for all lessons
+                        if (courseData?.modules) {
+                            const completions = {}
+                            for (const module of courseData.modules) {
+                                if (module.lessons) {
+                                    for (const lesson of module.lessons) {
+                                        const { completed } = await getLessonCompletion(session.user.id, lesson.id)
+                                        if (completed) {
+                                            completions[lesson.id] = true
+                                        }
+                                    }
+                                }
+                            }
+                            setCompletedLessons(completions)
+                        }
                     }
                 }
 
@@ -67,6 +86,31 @@ export default function CourseDetailsPage() {
             }
         }
         setEnrolling(false)
+    }
+
+    const handleToggleLesson = async (lessonId, e) => {
+        e.stopPropagation() // Prevent opening lesson if we add that later
+        if (!enrolled) return
+
+        const { progress, completed, error } = await toggleLessonCompletion(session.user.id, lessonId, id)
+
+        if (error) {
+            toast.error('Failed to update progress')
+            return
+        }
+
+        setCompletedLessons(prev => ({
+            ...prev,
+            [lessonId]: completed
+        }))
+
+        if (progress !== null) {
+            setCourseProgress(progress)
+        }
+
+        if (completed) {
+            toast.success('Lesson completed!')
+        }
     }
 
     if (loading) {
@@ -162,28 +206,45 @@ export default function CourseDetailsPage() {
                             </div>
                         </div>
 
-                        <div className="flex items-center justify-between border-t border-gray-100 pt-6">
-                            <div className="text-2xl font-bold text-gray-900">
-                                {course.price > 0 ? `$${course.price}` : 'Free'}
-                            </div>
-
-                            {enrolled ? (
-                                <button
-                                    disabled
-                                    className="bg-green-100 text-green-700 px-8 py-3 rounded-xl font-semibold flex items-center cursor-default"
-                                >
-                                    <HiCheckCircle className="w-5 h-5 mr-2" />
-                                    Enrolled
-                                </button>
-                            ) : (
-                                <button
-                                    onClick={handleEnroll}
-                                    disabled={enrolling}
-                                    className="bg-blue-600 text-white px-8 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    {enrolling ? 'Enrolling...' : 'Enroll Now'}
-                                </button>
+                        <div className="flex flex-col gap-4 border-t border-gray-100 pt-6">
+                            {enrolled && (
+                                <div className="w-full">
+                                    <div className="flex justify-between text-sm text-gray-600 mb-1">
+                                        <span>Course Progress</span>
+                                        <span className="font-bold">{courseProgress}%</span>
+                                    </div>
+                                    <div className="w-full bg-gray-100 rounded-full h-2.5">
+                                        <div
+                                            className="bg-green-500 h-2.5 rounded-full transition-all duration-500"
+                                            style={{ width: `${courseProgress}%` }}
+                                        ></div>
+                                    </div>
+                                </div>
                             )}
+
+                            <div className="flex items-center justify-between">
+                                <div className="text-2xl font-bold text-gray-900">
+                                    {course.price > 0 ? `$${course.price}` : 'Free'}
+                                </div>
+
+                                {enrolled ? (
+                                    <button
+                                        disabled
+                                        className="bg-green-100 text-green-700 px-8 py-3 rounded-xl font-semibold flex items-center cursor-default"
+                                    >
+                                        <HiCheckCircle className="w-5 h-5 mr-2" />
+                                        Enrolled
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={handleEnroll}
+                                        disabled={enrolling}
+                                        className="bg-blue-600 text-white px-8 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {enrolling ? 'Enrolling...' : 'Enroll Now'}
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -204,22 +265,45 @@ export default function CourseDetailsPage() {
                                 </div>
                                 <div className="divide-y divide-gray-100">
                                     {module.lessons && module.lessons.map((lesson, lIndex) => (
-                                        <div key={lesson.id} className="px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                                        <div key={lesson.id} className="px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors group">
                                             <div className="flex items-center space-x-3">
-                                                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 text-sm font-bold">
-                                                    {lIndex + 1}
+                                                <div className={`
+                                                    w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold
+                                                    ${completedLessons[lesson.id]
+                                                        ? 'bg-green-100 text-green-600'
+                                                        : 'bg-blue-100 text-blue-600'}
+                                                `}>
+                                                    {completedLessons[lesson.id] ? <HiCheckCircle className="w-5 h-5" /> : lIndex + 1}
                                                 </div>
                                                 <div>
-                                                    <p className="text-gray-900 font-medium">{lesson.title}</p>
+                                                    <p className={`font-medium ${completedLessons[lesson.id] ? 'text-gray-500 line-through' : 'text-gray-900'}`}>
+                                                        {lesson.title}
+                                                    </p>
                                                     <p className="text-xs text-gray-500 uppercase tracking-wider">{lesson.content_type}</p>
                                                 </div>
                                             </div>
 
-                                            {enrolled || lesson.is_free ? (
-                                                <HiPlay className="w-5 h-5 text-blue-600" />
-                                            ) : (
-                                                <HiLockClosed className="w-5 h-5 text-gray-400" />
-                                            )}
+                                            <div className="flex items-center space-x-4">
+                                                {enrolled && (
+                                                    <button
+                                                        onClick={(e) => handleToggleLesson(lesson.id, e)}
+                                                        className={`
+                                                            text-xs font-medium px-3 py-1 rounded-full border transition-colors
+                                                            ${completedLessons[lesson.id]
+                                                                ? 'bg-green-50 text-green-600 border-green-200 hover:bg-green-100'
+                                                                : 'bg-gray-50 text-gray-500 border-gray-200 hover:bg-gray-100'}
+                                                        `}
+                                                    >
+                                                        {completedLessons[lesson.id] ? 'Completed' : 'Mark Complete'}
+                                                    </button>
+                                                )}
+
+                                                {enrolled || lesson.is_free ? (
+                                                    <HiPlay className="w-5 h-5 text-blue-600" />
+                                                ) : (
+                                                    <HiLockClosed className="w-5 h-5 text-gray-400" />
+                                                )}
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
