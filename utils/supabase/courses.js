@@ -232,3 +232,43 @@ export async function uploadCourseThumbnail(courseId, file) {
 
     return { data, error }
 }
+
+// Create a new module
+export async function createModule(courseId, title, orderIndex) {
+    const { data, error } = await supabase
+        .from('modules')
+        .insert([{ course_id: courseId, title, order_index: orderIndex }])
+        .select()
+        .single();
+    return { data, error };
+}
+
+// Create a new lesson
+export async function createLesson(moduleId, title, orderIndex, contentType, contentUrl) {
+    const { data, error } = await supabase
+        .from('lessons')
+        .insert([
+            { module_id: moduleId, title, order_index: orderIndex, content_type: contentType, content_url: contentUrl },
+        ])
+        .select()
+        .single();
+    return { data, error };
+}
+
+// Delete a module
+export async function deleteModule(moduleId) {
+    const { data, error } = await supabase
+        .from('modules')
+        .delete()
+        .eq('id', moduleId);
+    return { data, error };
+}
+
+// Delete a lesson
+export async function deleteLesson(lessonId) {
+    const { data, error } = await supabase
+        .from('lessons')
+        .delete()
+        .eq('id', lessonId);
+    return { data, error };
+}

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import BasicInfoStep from './steps/BasicInfoStep'
+import CurriculumStep from './steps/CurriculumStep'
 import { HiCheck } from 'react-icons/hi'
 
 const steps = [
@@ -22,6 +23,12 @@ export default function CourseCreationWizard({ userId }) {
             setCurrentStep(2)
             // For now, we'll just redirect to the edit page or dashboard since Step 2 isn't built yet
             // router.push(`/instructor/courses/${data.id}/edit`)
+        } else if (step === 2) {
+            if (data === 'back') {
+                setCurrentStep(1)
+            } else {
+                setCurrentStep(3)
+            }
         }
     }
 
@@ -59,10 +66,16 @@ export default function CourseCreationWizard({ userId }) {
                         onComplete={(data) => handleStepComplete(1, data)}
                     />
                 )}
-                {currentStep === 2 && (
+                {currentStep === 2 && courseId && (
+                    <CurriculumStep
+                        courseId={courseId}
+                        onComplete={(action) => handleStepComplete(2, action)}
+                    />
+                )}
+                {currentStep === 3 && (
                     <div className="text-center py-12">
-                        <h3 className="text-xl font-bold text-gray-900 mb-2">Step 2: Curriculum</h3>
-                        <p className="text-gray-500">Curriculum builder coming soon...</p>
+                        <h3 className="text-xl font-bold text-gray-900 mb-2">Step 3: Publish</h3>
+                        <p className="text-gray-500">Publishing flow coming soon...</p>
                     </div>
                 )}
             </div>
