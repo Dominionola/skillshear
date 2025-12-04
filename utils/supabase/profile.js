@@ -137,13 +137,24 @@ export async function uploadBanner(userId, file) {
 export async function getProfileRole(userId) {
     const supabase = createClient()
 
-    const { data, error } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', userId)
-        .single()
+    try {
+        const { data, error } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', userId)
+            .maybeSingle()
 
-    return { role: data?.role || 'student', error }
+        if (error) {
+            console.error('Error fetching profile role:', error)
+            return { role: 'student', error }
+        }
+
+        // Return role if it exists, otherwise default to 'student'
+        return { role: data?.role || 'student', error: null }
+    } catch (err) {
+        console.error('Exception in getProfileRole:', err)
+        return { role: 'student', error: err }
+    }
 }
 
 export async function becomeInstructor(userId) {
