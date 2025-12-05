@@ -32,7 +32,7 @@ export default function CourseList({ userId }) {
     if (loading) {
         return (
             <div className="flex justify-center py-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-600"></div>
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-600"></div>
             </div>
         )
     }
@@ -43,7 +43,7 @@ export default function CourseList({ userId }) {
                 <h2 className="text-xl font-bold text-gray-900">Your Courses</h2>
                 <Link
                     href="/instructor/courses/new"
-                    className="flex items-center bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors"
+                    className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
                 >
                     <HiPlus className="w-5 h-5 mr-2" />
                     Create New Course
@@ -52,14 +52,14 @@ export default function CourseList({ userId }) {
 
             {courses.length === 0 ? (
                 <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
-                    <div className="w-16 h-16 bg-purple-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <HiPlus className="w-8 h-8 text-purple-500" />
+                    <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <HiPlus className="w-8 h-8 text-blue-500" />
                     </div>
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">Create your first course</h3>
                     <p className="text-gray-500 mb-6">Share your knowledge with the world.</p>
                     <Link
                         href="/instructor/courses/new"
-                        className="inline-flex items-center bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors"
+                        className="inline-flex items-center bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
                     >
                         Start Creating
                     </Link>
@@ -105,7 +105,7 @@ export default function CourseList({ userId }) {
                                     </Link>
                                     <Link
                                         href={`/instructor/courses/${course.id}/edit`}
-                                        className="text-purple-600 hover:text-purple-800 flex items-center text-sm font-medium"
+                                        className="text-blue-600 hover:text-blue-800 flex items-center text-sm font-medium"
                                     >
                                         <HiPencil className="w-4 h-4 mr-1" />
                                         Edit

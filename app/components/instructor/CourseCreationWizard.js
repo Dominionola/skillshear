@@ -45,12 +45,12 @@ export default function CourseCreationWizard({ userId }) {
                                 ${step.id < currentStep
                                     ? 'bg-green-500 text-white'
                                     : step.id === currentStep
-                                        ? 'bg-purple-600 text-white'
+                                        ? 'bg-blue-600 text-white'
                                         : 'bg-gray-200 text-gray-500'}
                             `}>
                                 {step.id < currentStep ? <HiCheck className="w-5 h-5" /> : step.id}
                             </div>
-                            <span className={`text-xs font-medium ${step.id === currentStep ? 'text-purple-600' : 'text-gray-500'}`}>
+                            <span className={`text-xs font-medium ${step.id === currentStep ? 'text-blue-600' : 'text-gray-500'}`}>
                                 {step.name}
                             </span>
                         </div>

@@ -95,7 +95,7 @@ export default function BasicInfoStep({ userId, onComplete }) {
                     value={formData.title}
                     onChange={handleChange}
                     placeholder="e.g. Advanced React Patterns"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                     required
                 />
             </div>
@@ -112,7 +112,7 @@ export default function BasicInfoStep({ userId, onComplete }) {
                     onChange={handleChange}
                     rows={4}
                     placeholder="What will students learn in this course?"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                     required
                 />
             </div>
@@ -128,7 +128,7 @@ export default function BasicInfoStep({ userId, onComplete }) {
                         name="category"
                         value={formData.category}
                         onChange={handleChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                     >
                         <option value="Development">Development</option>
                         <option value="Business">Business</option>
@@ -147,7 +147,7 @@ export default function BasicInfoStep({ userId, onComplete }) {
                         name="level"
                         value={formData.level}
                         onChange={handleChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                     >
                         <option value="beginner">Beginner</option>
                         <option value="intermediate">Intermediate</option>
@@ -169,7 +169,7 @@ export default function BasicInfoStep({ userId, onComplete }) {
                     onChange={handleChange}
                     min="0"
                     step="0.01"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                 />
                 <p className="text-xs text-gray-500 mt-1">Set to 0 for a free course.</p>
             </div>
@@ -205,7 +205,7 @@ export default function BasicInfoStep({ userId, onComplete }) {
                                 <div className="flex text-sm text-gray-600">
                                     <label
                                         htmlFor="thumbnail-upload"
-                                        className="relative cursor-pointer bg-white rounded-md font-medium text-purple-600 hover:text-purple-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-purple-500"
+                                        className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500"
                                     >
                                         <span>Upload a file</span>
                                         <input
@@ -231,7 +231,7 @@ export default function BasicInfoStep({ userId, onComplete }) {
                 <button
                     type="submit"
                     disabled={loading}
-                    className="bg-purple-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                    className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
                 >
                     {loading ? (
                         <>

@@ -150,7 +150,7 @@ export default function CurriculumStep({ courseId, onComplete }) {
                 </div>
                 <button
                     onClick={() => setIsAddingModule(true)}
-                    className="flex items-center text-purple-600 font-medium hover:text-purple-700"
+                    className="flex items-center text-blue-600 font-medium hover:text-blue-700"
                 >
                     <HiPlus className="w-5 h-5 mr-1" />
                     Add Module
@@ -165,12 +165,12 @@ export default function CurriculumStep({ courseId, onComplete }) {
                         value={newModuleTitle}
                         onChange={(e) => setNewModuleTitle(e.target.value)}
                         placeholder="Enter module title (e.g. Introduction)"
-                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500"
+                        className="flex-1 px-4 py-2 border border-blue-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                         autoFocus
                     />
                     <button
                         type="submit"
-                        className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700"
+                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
                     >
                         Add
                     </button>
@@ -288,14 +288,14 @@ export default function CurriculumStep({ courseId, onComplete }) {
                                             value={newLessonTitle}
                                             onChange={(e) => setNewLessonTitle(e.target.value)}
                                             placeholder="Enter lesson title"
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-purple-500 focus:border-purple-500"
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500"
                                             autoFocus
                                         />
                                         <div className="flex gap-2">
                                             <select
                                                 value={newLessonContentType}
                                                 onChange={(e) => setNewLessonContentType(e.target.value)}
-                                                className="w-1/3 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-purple-500 focus:border-purple-500"
+                                                className="w-1/3 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500"
                                             >
                                                 <option value="video">Video</option>
                                                 <option value="text">Text</option>
@@ -306,7 +306,7 @@ export default function CurriculumStep({ courseId, onComplete }) {
                                                 value={newLessonUrl}
                                                 onChange={(e) => setNewLessonUrl(e.target.value)}
                                                 placeholder="Video URL (YouTube or direct link)"
-                                                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-purple-500 focus:border-purple-500"
+                                                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500"
                                             />
                                         </div>
                                         <div className="flex justify-end gap-2">
@@ -323,7 +323,7 @@ export default function CurriculumStep({ courseId, onComplete }) {
                                             </button>
                                             <button
                                                 type="submit"
-                                                className="bg-purple-600 text-white px-3 py-1 rounded-lg hover:bg-purple-700 text-sm"
+                                                className="bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700 text-sm"
                                             >
                                                 Add Lesson
                                             </button>
@@ -332,7 +332,7 @@ export default function CurriculumStep({ courseId, onComplete }) {
                                 ) : (
                                     <button
                                         onClick={() => setAddingLessonToModuleId(module.id)}
-                                        className="flex items-center text-purple-600 font-medium hover:text-purple-700 text-sm mt-2"
+                                        className="flex items-center text-blue-600 font-medium hover:text-blue-700 text-sm mt-2"
                                     >
                                         <HiPlus className="w-4 h-4 mr-1" />
                                         Add Lesson
@@ -356,7 +356,7 @@ export default function CurriculumStep({ courseId, onComplete }) {
                 <button
                     type="button"
                     onClick={() => onComplete('next')}
-                    className="bg-purple-600 text-white px-8 py-2 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
+                    className="bg-blue-600 text-white px-8 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
                 >
                     Continue to Publish
                 </button>
