@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import BasicInfoStep from './steps/BasicInfoStep'
 import CurriculumStep from './steps/CurriculumStep'
+import PublishStep from './steps/PublishStep'
 import { HiCheck } from 'react-icons/hi'
 
 const steps = [
@@ -21,14 +22,17 @@ export default function CourseCreationWizard({ userId }) {
         if (step === 1 && data?.id) {
             setCourseId(data.id)
             setCurrentStep(2)
-            // For now, we'll just redirect to the edit page or dashboard since Step 2 isn't built yet
-            // router.push(`/instructor/courses/${data.id}/edit`)
         } else if (step === 2) {
             if (data === 'back') {
                 setCurrentStep(1)
             } else {
                 setCurrentStep(3)
             }
+        } else if (step === 3) {
+            if (data === 'back') {
+                setCurrentStep(2)
+            }
+            // Publishing redirects to instructor dashboard from within PublishStep
         }
     }
 
@@ -72,13 +76,14 @@ export default function CourseCreationWizard({ userId }) {
                         onComplete={(action) => handleStepComplete(2, action)}
                     />
                 )}
-                {currentStep === 3 && (
-                    <div className="text-center py-12">
-                        <h3 className="text-xl font-bold text-gray-900 mb-2">Step 3: Publish</h3>
-                        <p className="text-gray-500">Publishing flow coming soon...</p>
-                    </div>
+                {currentStep === 3 && courseId && (
+                    <PublishStep
+                        courseId={courseId}
+                        onComplete={(action) => handleStepComplete(3, action)}
+                    />
                 )}
             </div>
         </div>
     )
 }
+

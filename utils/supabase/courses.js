@@ -272,3 +272,25 @@ export async function deleteLesson(lessonId) {
         .eq('id', lessonId);
     return { data, error };
 }
+
+// Publish a course
+export async function publishCourse(courseId) {
+    const { data, error } = await supabase
+        .from('courses')
+        .update({ is_published: true, updated_at: new Date().toISOString() })
+        .eq('id', courseId)
+        .select()
+        .single();
+    return { data, error };
+}
+
+// Unpublish a course
+export async function unpublishCourse(courseId) {
+    const { data, error } = await supabase
+        .from('courses')
+        .update({ is_published: false, updated_at: new Date().toISOString() })
+        .eq('id', courseId)
+        .select()
+        .single();
+    return { data, error };
+}
