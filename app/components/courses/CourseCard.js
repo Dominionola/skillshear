@@ -13,8 +13,11 @@ export default function CourseCard({ course }) {
         thumbnail_url,
         level,
         instructor,
-        price
+        price,
+        enrollments
     } = course
+
+    const enrollmentCount = enrollments?.[0]?.count || 0
 
     const instructorName = instructor
         ? `${instructor.first_name || ''} ${instructor.last_name || ''}`.trim() || 'Unknown Instructor'
@@ -78,8 +81,14 @@ export default function CourseCard({ course }) {
                         <span className="truncate max-w-[100px]">{instructorName}</span>
                     </div>
 
-                    <div className="font-semibold text-gray-900">
-                        {price > 0 ? `$${price}` : 'Free'}
+                    <div className="flex items-center gap-4 text-gray-500">
+                        <span className="flex items-center text-xs">
+                            <HiUser className="w-4 h-4 mr-1" />
+                            {enrollmentCount} Students
+                        </span>
+                        <div className="font-semibold text-gray-900">
+                            {price > 0 ? `$${price}` : 'Free'}
+                        </div>
                     </div>
                 </div>
             </div>

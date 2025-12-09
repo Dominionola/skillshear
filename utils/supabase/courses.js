@@ -12,7 +12,8 @@ export async function getCourses() {
                 first_name,
                 last_name,
                 avatar_url
-            )
+            ),
+            enrollments(count)
         `)
         .eq('published', true)
         .order('created_at', { ascending: false })

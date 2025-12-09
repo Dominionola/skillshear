@@ -5,7 +5,9 @@ import { useRouter } from 'next/navigation'
 import BasicInfoStep from './steps/BasicInfoStep'
 import CurriculumStep from './steps/CurriculumStep'
 import PublishStep from './steps/PublishStep'
-import { HiCheck } from 'react-icons/hi'
+import { HiCheck, HiTrash } from 'react-icons/hi'
+import { deleteCourse } from '@/utils/supabase/instructor'
+import toast from 'react-hot-toast'
 
 const steps = [
     { id: 1, name: 'Basic Information' },
@@ -36,6 +38,18 @@ export default function CourseCreationWizard({ userId, courseId: initialCourseId
         }
     }
 
+    const handleDelete = async () => {
+        if (!confirm('Are you sure you want to delete this course? This action cannot be undone.')) return
+
+        const { error } = await deleteCourse(courseId)
+        if (error) {
+            toast.error('Failed to delete course')
+        } else {
+            toast.success('Course deleted')
+            router.push('/dashboard/instructor')
+        }
+    }
+
     return (
         <div className="max-w-4xl mx-auto">
             {/* Progress Bar */}
@@ -62,6 +76,22 @@ export default function CourseCreationWizard({ userId, courseId: initialCourseId
                 </div>
             </div>
 
+
+            {/* Course Actions (Delete) */}
+            {
+                courseId && (
+                    <div className="flex justify-end mb-4">
+                        <button
+                            onClick={handleDelete}
+                            className="flex items-center text-red-600 hover:text-red-700 text-sm font-medium transition-colors"
+                        >
+                            <HiTrash className="w-4 h-4 mr-1" />
+                            Delete Course
+                        </button>
+                    </div>
+                )
+            }
+
             {/* Step Content */}
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-8">
                 {currentStep === 1 && (
@@ -84,7 +114,7 @@ export default function CourseCreationWizard({ userId, courseId: initialCourseId
                     />
                 )}
             </div>
-        </div>
+        </div >
     )
 }
 

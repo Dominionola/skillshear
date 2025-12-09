@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { UserAuth } from "@/app/context/ContextAuth"
 import { getCourse, enrollInCourse, checkEnrollment, toggleLessonCompletion, getLessonCompletion } from '@/utils/supabase/courses'
-import { HiArrowLeft, HiBookOpen, HiCheckCircle, HiLockClosed, HiPlay, HiUser, HiClock } from 'react-icons/hi'
+import { HiArrowLeft, HiBookOpen, HiCheckCircle, HiLockClosed, HiPlay, HiUser, HiClock, HiX } from 'react-icons/hi'
+import QuizPlayer from '@/app/components/student/QuizPlayer'
 import toast from 'react-hot-toast'
 
 export default function CourseDetailsPage() {
@@ -16,8 +17,10 @@ export default function CourseDetailsPage() {
     const [loading, setLoading] = useState(true)
     const [enrolled, setEnrolled] = useState(false)
     const [enrolling, setEnrolling] = useState(false)
+
     const [completedLessons, setCompletedLessons] = useState({})
     const [courseProgress, setCourseProgress] = useState(0)
+    const [activeLesson, setActiveLesson] = useState(null)
 
     useEffect(() => {
         async function loadCourseData() {
@@ -146,6 +149,95 @@ export default function CourseDetailsPage() {
                 Back to Courses
             </button>
 
+            {/* Active Lesson Viewer */}
+            {activeLesson && (
+                <div className="bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-lg">
+                    <div className="bg-gray-900 text-white px-6 py-4 flex justify-between items-center">
+                        <div>
+                            <p className="text-gray-400 text-xs uppercase tracking-wider mb-1">Current Lesson</p>
+                            <h3 className="font-bold text-lg">{activeLesson.title}</h3>
+                        </div>
+                        <button
+                            onClick={() => setActiveLesson(null)}
+                            className="text-gray-400 hover:text-white transition-colors"
+                        >
+                            <HiX className="w-6 h-6" />
+                        </button>
+                    </div>
+
+                    <div className="p-6">
+                        {activeLesson.content_type === 'video' && activeLesson.content_url && (
+                            <div className="aspect-w-16 aspect-h-9 bg-black rounded-xl overflow-hidden mb-6">
+                                {(activeLesson.content_url.includes('youtube.com') || activeLesson.content_url.includes('youtu.be')) ? (
+                                    <iframe
+                                        width="100%"
+                                        height="500"
+                                        src={`https://www.youtube.com/embed/${activeLesson.content_url.split('v=')[1] || activeLesson.content_url.split('/').pop()}`}
+                                        title={activeLesson.title}
+                                        frameBorder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowFullScreen
+                                        className="w-full h-[500px]"
+                                    />
+                                ) : (
+                                    <video controls className="w-full h-auto">
+                                        <source src={activeLesson.content_url} />
+                                    </video>
+                                )}
+                            </div>
+                        )}
+
+                        {activeLesson.content_type === 'quiz' && activeLesson.quiz_data && (
+                            <QuizPlayer
+                                quizData={activeLesson.quiz_data}
+                                onComplete={async (score, total) => {
+                                    if (score / total >= 0.7) {
+                                        // Mark complete if passed
+                                        const { completed } = await getLessonCompletion(session.user.id, activeLesson.id)
+                                        if (!completed) {
+                                            handleToggleLesson(activeLesson.id, { stopPropagation: () => { } })
+                                        }
+                                        toast.success(`Passed! Scored ${score}/${total}`, { icon: '🏆' })
+                                    } else {
+                                        toast('Keep trying! You need 70% to pass.', { icon: '💪' })
+                                    }
+                                }}
+                            />
+                        )}
+
+                        {activeLesson.description && (
+                            <div className="mt-6 bg-gray-50 p-6 rounded-xl border border-gray-100">
+                                <h4 className="font-bold text-gray-900 mb-2">Lesson Notes</h4>
+                                <p className="text-gray-600 leading-relaxed">{activeLesson.description}</p>
+                            </div>
+                        )}
+
+                        {activeLesson.content_type === 'video' && (
+                            <div className="mt-6 flex justify-end">
+                                <button
+                                    onClick={(e) => handleToggleLesson(activeLesson.id, e)}
+                                    className={`
+                                        flex items-center px-6 py-3 rounded-xl font-semibold transition-colors
+                                        ${completedLessons[activeLesson.id]
+                                            ? 'bg-green-100 text-green-700 cursor-default'
+                                            : 'bg-blue-600 text-white hover:bg-blue-700'}
+                                    `}
+                                >
+                                    {completedLessons[activeLesson.id] ? (
+                                        <>
+                                            <HiCheckCircle className="w-5 h-5 mr-2" />
+                                            Lesson Completed
+                                        </>
+                                    ) : (
+                                        'Mark as Complete'
+                                    )}
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+
             {/* Course Hero Section */}
             <div className="bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm">
                 <div className="grid grid-cols-1 lg:grid-cols-3">
@@ -266,17 +358,19 @@ export default function CourseDetailsPage() {
                                 <div className="divide-y divide-gray-100">
                                     {module.lessons && module.lessons.map((lesson, lIndex) => (
                                         <div key={lesson.id} className="px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors group">
-                                            <div className="flex items-center space-x-3">
+                                            <div className="flex items-center space-x-3 cursor-pointer" onClick={() => (enrolled || lesson.is_free) && setActiveLesson(lesson)}>
                                                 <div className={`
                                                     w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold
                                                     ${completedLessons[lesson.id]
                                                         ? 'bg-green-100 text-green-600'
-                                                        : 'bg-blue-100 text-blue-600'}
+                                                        : activeLesson?.id === lesson.id
+                                                            ? 'bg-blue-600 text-white'
+                                                            : 'bg-blue-100 text-blue-600'}
                                                 `}>
-                                                    {completedLessons[lesson.id] ? <HiCheckCircle className="w-5 h-5" /> : lIndex + 1}
+                                                    {completedLessons[lesson.id] ? <HiCheckCircle className="w-5 h-5" /> : (activeLesson?.id === lesson.id ? <HiPlay className="w-4 h-4" /> : lIndex + 1)}
                                                 </div>
                                                 <div>
-                                                    <p className={`font-medium ${completedLessons[lesson.id] ? 'text-gray-500 line-through' : 'text-gray-900'}`}>
+                                                    <p className={`font-medium ${activeLesson?.id === lesson.id ? 'text-blue-600' : 'text-gray-900'} ${completedLessons[lesson.id] ? 'text-gray-500' : ''}`}>
                                                         {lesson.title}
                                                     </p>
                                                     <p className="text-xs text-gray-500 uppercase tracking-wider">{lesson.content_type}</p>
@@ -299,7 +393,9 @@ export default function CourseDetailsPage() {
                                                 )}
 
                                                 {enrolled || lesson.is_free ? (
-                                                    <HiPlay className="w-5 h-5 text-blue-600" />
+                                                    <button onClick={() => setActiveLesson(lesson)}>
+                                                        <HiPlay className={`w-5 h-5 ${activeLesson?.id === lesson.id ? 'text-blue-600' : 'text-gray-400 hover:text-blue-600'}`} />
+                                                    </button>
                                                 ) : (
                                                     <HiLockClosed className="w-5 h-5 text-gray-400" />
                                                 )}
