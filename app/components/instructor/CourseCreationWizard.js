@@ -13,10 +13,10 @@ const steps = [
     { id: 3, name: 'Publish' },
 ]
 
-export default function CourseCreationWizard({ userId }) {
+export default function CourseCreationWizard({ userId, courseId: initialCourseId }) {
     const router = useRouter()
     const [currentStep, setCurrentStep] = useState(1)
-    const [courseId, setCourseId] = useState(null)
+    const [courseId, setCourseId] = useState(initialCourseId || null)
 
     const handleStepComplete = (step, data) => {
         if (step === 1 && data?.id) {
@@ -67,6 +67,7 @@ export default function CourseCreationWizard({ userId }) {
                 {currentStep === 1 && (
                     <BasicInfoStep
                         userId={userId}
+                        courseId={courseId}
                         onComplete={(data) => handleStepComplete(1, data)}
                     />
                 )}

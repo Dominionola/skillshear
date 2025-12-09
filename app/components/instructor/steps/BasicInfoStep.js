@@ -1,11 +1,11 @@
 "use client"
 
-import { useState } from 'react'
-import { createCourse, uploadCourseThumbnail } from '@/utils/supabase/courses'
+import { useState, useEffect } from 'react'
+import { createCourse, updateCourse, getCourse, uploadCourseThumbnail } from '@/utils/supabase/courses'
 import { HiUpload, HiPhotograph } from 'react-icons/hi'
 import toast from 'react-hot-toast'
 
-export default function BasicInfoStep({ userId, onComplete }) {
+export default function BasicInfoStep({ userId, courseId, onComplete }) {
     const [loading, setLoading] = useState(false)
     const [formData, setFormData] = useState({
         title: '',
@@ -17,6 +17,33 @@ export default function BasicInfoStep({ userId, onComplete }) {
     })
     const [thumbnailFile, setThumbnailFile] = useState(null)
     const [thumbnailPreview, setThumbnailPreview] = useState(null)
+
+    useEffect(() => {
+        if (courseId) {
+            fetchCourseData()
+        }
+    }, [courseId])
+
+    const fetchCourseData = async () => {
+        setLoading(true)
+        const { data, error } = await getCourse(courseId)
+        if (data) {
+            setFormData({
+                title: data.title || '',
+                description: data.description || '',
+                category: data.category || 'Development',
+                level: data.level || 'beginner',
+                price: data.price?.toString() || '0',
+                published: data.published || false
+            })
+            if (data.thumbnail_url) {
+                setThumbnailPreview(data.thumbnail_url)
+            }
+        } else {
+            toast.error('Failed to fetch course data')
+        }
+        setLoading(false)
+    }
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -42,33 +69,41 @@ export default function BasicInfoStep({ userId, onComplete }) {
         }
 
         try {
-            // 1. Create Course
+            let course
             const coursePayload = {
                 ...formData,
                 instructor_id: userId,
                 price: parseFloat(formData.price) || 0,
-                // Ensure other required fields by DB schema are present if any
             }
 
-            const { data: course, error: createError } = await createCourse(coursePayload)
-
-            if (createError) throw createError
-
+            if (courseId) {
+                // Update existing course
+                const { data, error } = await updateCourse(courseId, coursePayload)
+                if (error) throw error
+                course = data
+                toast.success('Course updated!')
+            } else {
+                // Create new course
+                const { data, error } = await createCourse(coursePayload)
+                if (error) throw error
+                course = data
+                toast.success('Course draft created!')
+            }
             // 2. Upload Thumbnail (if selected)
             if (thumbnailFile && course) {
                 const { error: uploadError } = await uploadCourseThumbnail(course.id, thumbnailFile)
                 if (uploadError) {
-                    toast.error('Course created but thumbnail upload failed')
+                    toast.error('Course saved but thumbnail upload failed')
                     console.error(uploadError)
                 }
             }
 
-            toast.success('Course draft created!')
+            // Move to next step
             onComplete(course)
 
         } catch (error) {
-            console.error('Error creating course:', error)
-            toast.error('Failed to create course')
+            console.error('Error saving course:', error)
+            toast.error('Failed to save course')
         } finally {
             setLoading(false)
         }

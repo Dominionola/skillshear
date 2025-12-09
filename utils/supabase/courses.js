@@ -198,6 +198,18 @@ export async function createCourse(courseData) {
     return { data, error }
 }
 
+// Update an existing course
+export async function updateCourse(courseId, courseData) {
+    const { data, error } = await supabase
+        .from('courses')
+        .update(courseData)
+        .eq('id', courseId)
+        .select()
+        .single()
+
+    return { data, error }
+}
+
 // Upload course thumbnail to Supabase Storage
 export async function uploadCourseThumbnail(courseId, file) {
     // Create a unique file name

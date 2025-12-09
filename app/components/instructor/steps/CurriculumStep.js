@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { getCourse, createModule, createLesson, deleteModule, deleteLesson } from '@/utils/supabase/courses'
-import { HiPlus, HiTrash, HiPencil, HiChevronDown, HiChevronRight } from 'react-icons/hi'
+import { HiPlus, HiTrash, HiPencil, HiChevronDown, HiChevronRight, HiCheck, HiX } from 'react-icons/hi'
 import toast from 'react-hot-toast'
 
 // Helper to extract YouTube video ID
@@ -25,6 +25,12 @@ export default function CurriculumStep({ courseId, onComplete }) {
     const [newLessonContentType, setNewLessonContentType] = useState('video')
     const [newLessonUrl, setNewLessonUrl] = useState('')
     const [newLessonDescription, setNewLessonDescription] = useState('')
+
+    // Quiz Builder State
+    const [quizQuestions, setQuizQuestions] = useState([])
+    const [currentQuestion, setCurrentQuestion] = useState('')
+    const [currentOptions, setCurrentOptions] = useState(['', '', '', ''])
+    const [correctOptionIndex, setCorrectOptionIndex] = useState(0)
 
     useEffect(() => {
         fetchCourseData()
@@ -82,17 +88,62 @@ export default function CurriculumStep({ courseId, onComplete }) {
         }
     }
 
+    const handleAddQuestionToQuiz = () => {
+        if (!currentQuestion.trim()) {
+            toast.error('Please enter a question')
+            return
+        }
+        if (currentOptions.some(opt => !opt.trim())) {
+            toast.error('Please fill in all options')
+            return
+        }
+
+        const newQuestion = {
+            id: Date.now(),
+            question: currentQuestion,
+            options: currentOptions,
+            correctAnswer: correctOptionIndex
+        }
+
+        setQuizQuestions([...quizQuestions, newQuestion])
+        setCurrentQuestion('')
+        setCurrentOptions(['', '', '', ''])
+        setCorrectOptionIndex(0)
+    }
+
+    const removeQuestion = (id) => {
+        setQuizQuestions(quizQuestions.filter(q => q.id !== id))
+    }
+
     const handleAddLesson = async (e, moduleId) => {
         e.preventDefault()
         if (!newLessonTitle.trim()) return
 
+        // Quiz Validation
+        if (newLessonContentType === 'quiz' && quizQuestions.length === 0) {
+            toast.error('Please add at least one question to the quiz')
+            return
+        }
+
         const module = modules.find(m => m.id === moduleId)
         const orderIndex = module.lessons ? module.lessons.length : 0
 
-        const { data, error } = await createLesson(moduleId, newLessonTitle, orderIndex, newLessonContentType, newLessonUrl, newLessonDescription)
+        const quizData = newLessonContentType === 'quiz' ? quizQuestions : null
+
+        // Pass quizData to createLesson
+        const { data, error } = await createLesson(
+            moduleId,
+            newLessonTitle,
+            orderIndex,
+            newLessonContentType,
+            newLessonUrl,
+            newLessonDescription,
+            quizData
+        )
 
         if (error) {
-            toast.error('Failed to create lesson')
+            console.error('Create Lesson Error:', error)
+            toast.error(`Failed to create lesson: ${error.message}`)
         } else {
             toast.success('Lesson added')
 
@@ -108,9 +159,13 @@ export default function CurriculumStep({ courseId, onComplete }) {
             })
 
             setModules(updatedModules)
+            // Reset form
             setNewLessonTitle('')
             setNewLessonUrl('')
             setNewLessonDescription('')
+            setQuizQuestions([])
+            setCurrentQuestion('')
+            setCurrentOptions(['', '', '', ''])
             setAddingLessonToModuleId(null)
         }
     }
@@ -236,7 +291,9 @@ export default function CurriculumStep({ courseId, onComplete }) {
                                                 <span className="text-sm font-medium text-gray-700">
                                                     {lesson.order_index + 1}. {lesson.title}
                                                 </span>
-                                                <span className="text-xs text-gray-500">({lesson.content_type})</span>
+                                                <span className={`text-xs px-2 py-0.5 rounded-full ${lesson.content_type === 'quiz' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-600'}`}>
+                                                    {lesson.content_type.toUpperCase()}
+                                                </span>
                                             </div>
                                             <div className="flex items-center gap-2">
                                                 <button
@@ -249,11 +306,10 @@ export default function CurriculumStep({ courseId, onComplete }) {
                                             </div>
                                         </div>
 
-                                        {/* Video Embed - YouTube or Direct Video */}
+                                        {/* Video Content */}
                                         {lesson.content_type === 'video' && lesson.content_url && (
                                             <div className="mt-3">
                                                 {extractYouTubeId(lesson.content_url) ? (
-                                                    // YouTube Embed
                                                     <iframe
                                                         width="100%"
                                                         height="200"
@@ -264,7 +320,6 @@ export default function CurriculumStep({ courseId, onComplete }) {
                                                         allowFullScreen
                                                     />
                                                 ) : (
-                                                    // Direct Video File
                                                     <video
                                                         width="100%"
                                                         height="200"
@@ -272,13 +327,30 @@ export default function CurriculumStep({ courseId, onComplete }) {
                                                         className="rounded-lg"
                                                     >
                                                         <source src={lesson.content_url} type="video/mp4" />
-                                                        <source src={lesson.content_url} type="video/webm" />
-                                                        <source src={lesson.content_url} type="video/ogg" />
                                                         Your browser does not support the video tag.
                                                     </video>
                                                 )}
                                             </div>
                                         )}
+
+                                        {/* Quiz Preview */}
+                                        {lesson.content_type === 'quiz' && lesson.quiz_data && (
+                                            <div className="mt-3 pl-4 border-l-2 border-purple-200 space-y-2">
+                                                <p className="text-sm text-gray-600 italic">
+                                                    {lesson.quiz_data.length} Question{lesson.quiz_data.length !== 1 ? 's' : ''}
+                                                </p>
+                                                {lesson.quiz_data.slice(0, 1).map((q, idx) => (
+                                                    <div key={idx} className="text-sm">
+                                                        <p className="font-medium text-gray-800">Q1: {q.question}</p>
+                                                        <p className="text-gray-500 text-xs ml-2">• {q.options.length} options</p>
+                                                    </div>
+                                                ))}
+                                                {lesson.quiz_data.length > 1 && (
+                                                    <p className="text-xs text-gray-400">...and {lesson.quiz_data.length - 1} more</p>
+                                                )}
+                                            </div>
+                                        )}
+
                                         {lesson.description && (
                                             <div className="mt-3 text-sm text-gray-600 bg-white p-3 rounded border border-gray-100">
                                                 <p className="font-semibold text-gray-800 mb-1">Keynotes / Summary:</p>
@@ -290,7 +362,24 @@ export default function CurriculumStep({ courseId, onComplete }) {
 
                                 {/* Add Lesson Form/Button */}
                                 {addingLessonToModuleId === module.id ? (
-                                    <form onSubmit={(e) => handleAddLesson(e, module.id)} className="bg-white p-3 rounded-lg border border-gray-200 space-y-2">
+                                    <form onSubmit={(e) => handleAddLesson(e, module.id)} className="bg-white p-4 rounded-lg border border-gray-200 space-y-4 shadow-sm">
+                                        <div className="flex justify-between items-center mb-2">
+                                            <h4 className="font-semibold text-gray-700">New Lesson</h4>
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setAddingLessonToModuleId(null)
+                                                    setNewLessonTitle('')
+                                                    setNewLessonUrl('')
+                                                    setNewLessonDescription('')
+                                                    setQuizQuestions([])
+                                                }}
+                                                className="text-gray-400 hover:text-gray-600"
+                                            >
+                                                <HiX className="w-5 h-5" />
+                                            </button>
+                                        </div>
+
                                         <input
                                             type="text"
                                             value={newLessonTitle}
@@ -299,32 +388,125 @@ export default function CurriculumStep({ courseId, onComplete }) {
                                             className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500"
                                             autoFocus
                                         />
-                                        <div className="flex gap-2">
+
+                                        <div>
+                                            <label className="block text-xs font-medium text-gray-500 mb-1">Content Type</label>
                                             <select
                                                 value={newLessonContentType}
                                                 onChange={(e) => setNewLessonContentType(e.target.value)}
-                                                className="w-1/3 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500"
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500"
                                             >
-                                                <option value="video">Video</option>
-                                                <option value="text">Text</option>
-                                                <option value="quiz">Quiz</option>
+                                                <option value="video">Video Lesson</option>
+                                                <option value="quiz">Quiz Assessment</option>
+                                                {/* <option value="text">Text Only</option> */}
                                             </select>
-                                            <input
-                                                type="text"
-                                                value={newLessonUrl}
-                                                onChange={(e) => setNewLessonUrl(e.target.value)}
-                                                placeholder="Video URL (YouTube or direct link)"
-                                                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500"
-                                            />
                                         </div>
+
+                                        {/* Video URL Input */}
+                                        {newLessonContentType === 'video' && (
+                                            <div>
+                                                <input
+                                                    type="text"
+                                                    value={newLessonUrl}
+                                                    onChange={(e) => setNewLessonUrl(e.target.value)}
+                                                    placeholder="Video URL (YouTube or direct link)"
+                                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500"
+                                                />
+                                                <p className="text-xs text-gray-400 mt-1">
+                                                    Paste a YouTube link or a direct URL to a video file.
+                                                </p>
+                                            </div>
+                                        )}
+
+                                        {/* Quiz Builder */}
+                                        {newLessonContentType === 'quiz' && (
+                                            <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                                                <h5 className="font-medium text-gray-700 mb-3 text-sm">Quiz Questions ({quizQuestions.length})</h5>
+
+                                                {/* List of added questions */}
+                                                <div className="space-y-2 mb-4">
+                                                    {quizQuestions.map((q, idx) => (
+                                                        <div key={q.id} className="bg-white p-2 rounded border border-gray-200 text-sm flex justify-between items-start">
+                                                            <div>
+                                                                <span className="font-bold text-gray-500 mr-2">Q{idx + 1}:</span>
+                                                                {q.question}
+                                                            </div>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => removeQuestion(q.id)}
+                                                                className="text-red-400 hover:text-red-600"
+                                                            >
+                                                                <HiTrash className="w-4 h-4" />
+                                                            </button>
+                                                        </div>
+                                                    ))}
+                                                </div>
+
+                                                {/* Add new question form */}
+                                                <div className="bg-white p-3 rounded border border-blue-100">
+                                                    <input
+                                                        type="text"
+                                                        value={currentQuestion}
+                                                        onChange={(e) => setCurrentQuestion(e.target.value)}
+                                                        placeholder="Question text?"
+                                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm mb-3 focus:ring-blue-500 focus:border-blue-500"
+                                                    />
+
+                                                    <div className="mb-2 flex items-center justify-between">
+                                                        <label className="text-xs font-semibold text-gray-600">Options</label>
+                                                        <span className="text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
+                                                            Select the radio button for the correct answer
+                                                        </span>
+                                                    </div>
+
+                                                    <div className="space-y-2 mb-3">
+                                                        {currentOptions.map((opt, idx) => (
+                                                            <div key={idx} className="flex items-center gap-2">
+                                                                <input
+                                                                    type="radio"
+                                                                    name="correctOption"
+                                                                    checked={correctOptionIndex === idx}
+                                                                    onChange={() => setCorrectOptionIndex(idx)}
+                                                                    className="text-blue-600 focus:ring-blue-500"
+                                                                />
+                                                                <input
+                                                                    type="text"
+                                                                    value={opt}
+                                                                    onChange={(e) => {
+                                                                        const newOpts = [...currentOptions]
+                                                                        newOpts[idx] = e.target.value
+                                                                        setCurrentOptions(newOpts)
+                                                                    }}
+                                                                    placeholder={`Option ${idx + 1}`}
+                                                                    className={`flex-1 px-3 py-2 border rounded-lg text-sm outline-none transition-colors ${correctOptionIndex === idx
+                                                                            ? 'border-blue-500 bg-blue-50/50'
+                                                                            : 'border-gray-200 focus:border-blue-500'
+                                                                        }`}
+                                                                />
+                                                            </div>
+                                                        ))}
+                                                    </div>
+
+                                                    <button
+                                                        type="button"
+                                                        onClick={handleAddQuestionToQuiz}
+                                                        className="w-full py-1.5 bg-gray-100 text-gray-700 rounded text-xs font-medium hover:bg-gray-200 transition-colors"
+                                                    >
+                                                        + Add Question
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )}
+
                                         <textarea
                                             value={newLessonDescription}
                                             onChange={(e) => setNewLessonDescription(e.target.value)}
-                                            placeholder="Summary / Keynotes (Optional)"
+                                            placeholder={newLessonContentType === 'quiz' ? "Instructions for the quiz (Optional)" : "Summary / Keynotes (Optional)"}
                                             rows={3}
                                             className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500"
                                         />
-                                        <div className="flex justify-end gap-2">
+
+                                        <div className="flex justify-end gap-2 pt-2">
                                             <button
                                                 type="button"
                                                 onClick={() => {
@@ -332,14 +514,15 @@ export default function CurriculumStep({ courseId, onComplete }) {
                                                     setNewLessonTitle('')
                                                     setNewLessonUrl('')
                                                     setNewLessonDescription('')
+                                                    setQuizQuestions([])
                                                 }}
-                                                className="text-gray-500 px-3 py-1 hover:text-gray-700 text-sm"
+                                                className="text-gray-500 px-4 py-2 hover:text-gray-700 text-sm"
                                             >
                                                 Cancel
                                             </button>
                                             <button
                                                 type="submit"
-                                                className="bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700 text-sm"
+                                                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 text-sm font-medium"
                                             >
                                                 Add Lesson
                                             </button>
@@ -348,7 +531,7 @@ export default function CurriculumStep({ courseId, onComplete }) {
                                 ) : (
                                     <button
                                         onClick={() => setAddingLessonToModuleId(module.id)}
-                                        className="flex items-center text-blue-600 font-medium hover:text-blue-700 text-sm mt-2"
+                                        className="flex items-center text-blue-600 font-medium hover:text-blue-700 text-sm mt-2 ml-1"
                                     >
                                         <HiPlus className="w-4 h-4 mr-1" />
                                         Add Lesson
