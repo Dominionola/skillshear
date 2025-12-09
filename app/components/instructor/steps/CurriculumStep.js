@@ -24,6 +24,7 @@ export default function CurriculumStep({ courseId, onComplete }) {
     const [newLessonTitle, setNewLessonTitle] = useState('')
     const [newLessonContentType, setNewLessonContentType] = useState('video')
     const [newLessonUrl, setNewLessonUrl] = useState('')
+    const [newLessonDescription, setNewLessonDescription] = useState('')
 
     useEffect(() => {
         fetchCourseData()
@@ -88,7 +89,7 @@ export default function CurriculumStep({ courseId, onComplete }) {
         const module = modules.find(m => m.id === moduleId)
         const orderIndex = module.lessons ? module.lessons.length : 0
 
-        const { data, error } = await createLesson(moduleId, newLessonTitle, orderIndex, newLessonContentType, newLessonUrl)
+        const { data, error } = await createLesson(moduleId, newLessonTitle, orderIndex, newLessonContentType, newLessonUrl, newLessonDescription)
 
         if (error) {
             toast.error('Failed to create lesson')
@@ -109,6 +110,7 @@ export default function CurriculumStep({ courseId, onComplete }) {
             setModules(updatedModules)
             setNewLessonTitle('')
             setNewLessonUrl('')
+            setNewLessonDescription('')
             setAddingLessonToModuleId(null)
         }
     }
@@ -277,6 +279,12 @@ export default function CurriculumStep({ courseId, onComplete }) {
                                                 )}
                                             </div>
                                         )}
+                                        {lesson.description && (
+                                            <div className="mt-3 text-sm text-gray-600 bg-white p-3 rounded border border-gray-100">
+                                                <p className="font-semibold text-gray-800 mb-1">Keynotes / Summary:</p>
+                                                {lesson.description}
+                                            </div>
+                                        )}
                                     </div>
                                 ))}
 
@@ -309,6 +317,13 @@ export default function CurriculumStep({ courseId, onComplete }) {
                                                 className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500"
                                             />
                                         </div>
+                                        <textarea
+                                            value={newLessonDescription}
+                                            onChange={(e) => setNewLessonDescription(e.target.value)}
+                                            placeholder="Summary / Keynotes (Optional)"
+                                            rows={3}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500"
+                                        />
                                         <div className="flex justify-end gap-2">
                                             <button
                                                 type="button"
@@ -316,6 +331,7 @@ export default function CurriculumStep({ courseId, onComplete }) {
                                                     setAddingLessonToModuleId(null)
                                                     setNewLessonTitle('')
                                                     setNewLessonUrl('')
+                                                    setNewLessonDescription('')
                                                 }}
                                                 className="text-gray-500 px-3 py-1 hover:text-gray-700 text-sm"
                                             >

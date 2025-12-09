@@ -244,11 +244,19 @@ export async function createModule(courseId, title, orderIndex) {
 }
 
 // Create a new lesson
-export async function createLesson(moduleId, title, orderIndex, contentType, contentUrl) {
+export async function createLesson(moduleId, title, orderIndex, contentType, contentUrl, description, quizData) {
     const { data, error } = await supabase
         .from('lessons')
         .insert([
-            { module_id: moduleId, title, order_index: orderIndex, content_type: contentType, content_url: contentUrl },
+            {
+                module_id: moduleId,
+                title,
+                order_index: orderIndex,
+                content_type: contentType,
+                content_url: contentUrl,
+                description,
+                quiz_data: quizData
+            },
         ])
         .select()
         .single();
@@ -277,7 +285,7 @@ export async function deleteLesson(lessonId) {
 export async function publishCourse(courseId) {
     const { data, error } = await supabase
         .from('courses')
-        .update({ is_published: true, updated_at: new Date().toISOString() })
+        .update({ published: true, updated_at: new Date().toISOString() })
         .eq('id', courseId)
         .select()
         .single();
@@ -288,7 +296,7 @@ export async function publishCourse(courseId) {
 export async function unpublishCourse(courseId) {
     const { data, error } = await supabase
         .from('courses')
-        .update({ is_published: false, updated_at: new Date().toISOString() })
+        .update({ published: false, updated_at: new Date().toISOString() })
         .eq('id', courseId)
         .select()
         .single();
