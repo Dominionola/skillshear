@@ -207,7 +207,7 @@ export async function uploadCourseThumbnail(courseId, file) {
 
     // Upload file to storage
     const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('thumbnails')
+        .from('course-thumbnails')
         .upload(filePath, file, {
             cacheControl: '3600',
             upsert: true
@@ -219,7 +219,7 @@ export async function uploadCourseThumbnail(courseId, file) {
 
     // Get public URL
     const { data: { publicUrl } } = supabase.storage
-        .from('thumbnails')
+        .from('course-thumbnails')
         .getPublicUrl(filePath)
 
     // Update course with thumbnail URL

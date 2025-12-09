@@ -29,6 +29,19 @@ export async function GET(request) {
 
     // Check for duplicate account with different provider
     const user = sessionData?.user;
+    const intent = searchParams.get('intent');
+
+    if (user && intent === 'login') {
+      const userCreatedAt = new Date(user.created_at);
+      const now = new Date();
+      const ageInSeconds = (now - userCreatedAt) / 1000;
+
+      // If account was created within the last 30 seconds and intent was login-only
+      if (ageInSeconds < 30) {
+        await supabase.auth.signOut();
+        return NextResponse.redirect(`${origin}/auth/login?error=account_not_found`);
+      }
+    }
 
     if (user && user.identities && user.identities.length > 0) {
       // Get all identity providers for this user

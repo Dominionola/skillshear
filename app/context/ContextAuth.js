@@ -73,8 +73,9 @@ export function ContextAuthProvider({ children }) {
 
 
   // --- SIGN UP WITH GOOGLE ---
-  const signInWithGoogle = async () => {
-    const redirectTo = `${window.location.origin}/auth/callback`;
+  const signInWithGoogle = async (options = {}) => {
+    const queryParams = options.queryParams ? `?${new URLSearchParams(options.queryParams).toString()}` : '';
+    const redirectTo = `${window.location.origin}/auth/callback${queryParams}`;
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
@@ -84,8 +85,9 @@ export function ContextAuthProvider({ children }) {
   }
 
   // --- SIGN IN WITH GITHUB ---
-  const signInWithGitHub = async () => {
-    const redirectTo = `${window.location.origin}/auth/callback`;
+  const signInWithGitHub = async (options = {}) => {
+    const queryParams = options.queryParams ? `?${new URLSearchParams(options.queryParams).toString()}` : '';
+    const redirectTo = `${window.location.origin}/auth/callback${queryParams}`;
     await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {

@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ContextAuthProvider, UserAuth } from "@/app/context/ContextAuth";
 import Link from "next/link";
 
@@ -15,6 +15,14 @@ export default function SigninPlaceholderForm() {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const errorParam = searchParams.get('error');
+
+  useEffect(() => {
+    if (errorParam === 'account_not_found') {
+      setError("Account not found. Please Sign Up to create an account.");
+    }
+  }, [errorParam]);
 
   const { session, signInUser, signInWithGoogle, signInWithGitHub } = UserAuth();
   const handleSignin = async (e) => {
@@ -38,7 +46,7 @@ export default function SigninPlaceholderForm() {
       <div className="mb-6 flex flex-col md:flex-row gap-4 justify-center items-center">
         <button
           type="button"
-          onClick={signInWithGitHub}
+          onClick={() => signInWithGitHub({ queryParams: { intent: 'login' } })}
           className="flex items-center justify-center gap-3 w-full md:w-auto px-6 py-2.5 border border-gray-700 rounded-full bg-[#24292e] hover:bg-[#1b1f23] transition-colors"
         >
           <Image
@@ -52,7 +60,7 @@ export default function SigninPlaceholderForm() {
 
         <button
           type="button"
-          onClick={signInWithGoogle}
+          onClick={() => signInWithGoogle({ queryParams: { intent: 'login' } })}
           className="flex items-center justify-between gap-3 w-full md:w-auto pl-4 pr-1 py-1.5 bg-[#1a73e8] hover:bg-[#1557b0] rounded-full transition-colors group"
         >
           <span className="text-white font-medium ml-2">Continue with Google</span>
