@@ -3,25 +3,23 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { createClient } from "@/utils/supabase/client"
+import { getInstructorCourses } from "@/utils/supabase/instructor"
 import { HiPlus, HiPencil, HiEye } from 'react-icons/hi'
 
 export default function CourseList({ userId }) {
     const [courses, setCourses] = useState([])
     const [loading, setLoading] = useState(true)
-    const supabase = createClient()
 
     useEffect(() => {
         async function fetchInstructorCourses() {
             if (!userId) return
 
-            const { data, error } = await supabase
-                .from('courses')
-                .select('*')
-                .eq('instructor_id', userId)
-                .order('created_at', { ascending: false })
+            const { data, error } = await getInstructorCourses(userId)
 
             if (data) {
                 setCourses(data)
+            } else if (error) {
+                console.error("Failed to fetch courses:", error)
             }
             setLoading(false)
         }

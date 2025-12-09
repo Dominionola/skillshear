@@ -1,7 +1,8 @@
 "use client"
 
-import { useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { UserAuth } from '@/app/context/ContextAuth'
+import { createClient } from "@/utils/supabase/client"
 import { useRouter } from 'next/navigation'
 import { HiMenu, HiSearch, HiBell, HiChevronDown } from 'react-icons/hi'
 
@@ -9,6 +10,24 @@ export default function InstructorTopNav({ setIsSidebarOpen }) {
     const { session, signOut } = UserAuth()
     const router = useRouter()
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+
+    const [profile, setProfile] = useState(null)
+    const supabase = createClient()
+
+    useEffect(() => {
+        async function fetchProfile() {
+            if (session?.user?.id) {
+                const { data } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', session.user.id)
+                    .single()
+
+                if (data) setProfile(data)
+            }
+        }
+        fetchProfile()
+    }, [session])
 
     const handleSignOut = async () => {
         try {
@@ -20,8 +39,9 @@ export default function InstructorTopNav({ setIsSidebarOpen }) {
     }
 
     // Get user's first name or email
-    const userName = session?.user?.user_metadata?.first_name || session?.user?.email?.split('@')[0] || 'Instructor'
+    const userName = profile?.first_name || session?.user?.user_metadata?.first_name || session?.user?.email?.split('@')[0] || 'Instructor'
     const userEmail = session?.user?.email
+    const userAvatar = profile?.avatar_url
 
     return (
         <header className="sticky top-0 z-30 bg-white border-b border-gray-200">
@@ -67,10 +87,18 @@ export default function InstructorTopNav({ setIsSidebarOpen }) {
                             className="flex items-center space-x-3 hover:bg-gray-100 rounded-lg px-3 py-2 transition-colors"
                         >
                             {/* Avatar */}
-                            <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                                <span className="text-white font-semibold text-sm">
-                                    {userName.charAt(0).toUpperCase()}
-                                </span>
+                            <div className="w-8 h-8 rounded-full overflow-hidden bg-blue-600 flex items-center justify-center">
+                                {userAvatar ? (
+                                    <img
+                                        src={userAvatar}
+                                        alt={userName}
+                                        className="w-full h-full object-cover"
+                                    />
+                                ) : (
+                                    <span className="text-white font-semibold text-sm">
+                                        {userName.charAt(0).toUpperCase()}
+                                    </span>
+                                )}
                             </div>
 
                             {/* Name (hidden on mobile) */}

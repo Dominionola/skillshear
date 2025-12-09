@@ -5,7 +5,7 @@ import { createClient } from "@/utils/supabase/client";
 
 const supabase = createClient();
 
-const AuthContext = createContext(null);
+const AuthContext = createContext({});
 
 export function ContextAuthProvider({ children }) {
   const [session, setSession] = useState(undefined);
